@@ -14,10 +14,10 @@ import javax.swing.JFrame;
 public class Main
 {
 
-    private static String SCENE_FILE_PATH = "demo/plane_sky.txt";
-
     private static final Dimension RENDER_WINDOW_SIZE = new Dimension(600, 600);
     private static final Dimension CONTROL_WINDOW_SIZE = new Dimension(350, 500);
+
+    private static String currentSceneFile = "demo/plane_sky.txt";
 
     public static void main(String[] args) throws Exception
     {
@@ -26,7 +26,7 @@ public class Main
         mainFrame.setSize(RENDER_WINDOW_SIZE);
 
         // Initalize Tracer
-        Tracer tracer = new Tracer(RENDER_WINDOW_SIZE, SCENE_FILE_PATH);
+        Tracer tracer = new Tracer(RENDER_WINDOW_SIZE, currentSceneFile);
         mainFrame.add(tracer);
         
         mainFrame.setVisible(true);
@@ -49,7 +49,7 @@ public class Main
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                tracer.reloadScene(SCENE_FILE_PATH);
+                tracer.reloadScene(currentSceneFile);
             }
         });
         controlFrame.add(reloadButton);
@@ -58,8 +58,8 @@ public class Main
         JComboBox<String> comboBox = new JComboBox<>(choices);
         comboBox.addActionListener(e -> {
             String selectedItem = (String) comboBox.getSelectedItem();
-            SCENE_FILE_PATH = selectedItem;
-            tracer.reloadScene(SCENE_FILE_PATH);
+            currentSceneFile = selectedItem;
+            tracer.reloadScene(currentSceneFile);
         });
         controlFrame.add(comboBox);
 
