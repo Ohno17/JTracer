@@ -101,7 +101,13 @@ public class SceneReader
 
             if (materialKey != null)
             {
-                consumer.setMaterial(materialMap.get(materialKey));
+                Material material = materialMap.get(materialKey);
+                if (material == null)
+                {
+                    System.err.println("No material named \'" + materialKey + "\'");
+                    return false;
+                }
+                consumer.setMaterial(material);
             }
 
             scene.add(consumer);
