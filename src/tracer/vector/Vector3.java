@@ -16,6 +16,11 @@ public class Vector3 extends BaseVector3<Vector3>
         super(x, y, z);
     }
 
+    public Color toColor()
+    {
+        return new Color(x, y, z);
+    }
+
     @Override
     protected Vector3 createNew(double x, double y, double z) {
         return new Vector3(x, y, z);

@@ -73,6 +73,12 @@ public abstract class BaseVector3<T extends BaseVector3<?>> implements Iterable<
         );
     }
 
+    public T lerp(BaseVector3<?> other, double factor)
+    {
+        BaseVector3<?> blended = this.multiply(1.0 - factor).add(other.multiply(factor));
+        return createNew(blended.x, blended.y, blended.z);
+    }
+
     public double dot(BaseVector3<?> other)
     {
         return (x * other.x) + (y * other.y) + (z * other.z);

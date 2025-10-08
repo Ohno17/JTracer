@@ -9,7 +9,7 @@ import tracer.ray.RayInfo;
 import tracer.vector.Color;
 import tracer.vector.Vector3;
 /**
- * Represents a scene filled with meshes.
+ * Represents a scene that can be filled with meshes.
  */
 public class Scene
 {
@@ -25,7 +25,7 @@ public class Scene
     {
         this.bounces = bounces;
 
-        this.camera = new Camera();
+        this.camera = new Camera(80, 1d / 1d);
         this.meshes = new ArrayList<Mesh>();
     }
 
@@ -67,7 +67,7 @@ public class Scene
     private Color getBackgroundColor(Ray ray)
     {
         double factor = (-ray.direction.y + 1) / 2d;
-        return new Color(180, 180, 255).multiply(1.0 - factor).add(new Color(0, 0, 0).multiply(factor));
+        return new Color(180, 180, 255).lerp(new Color(0, 0, 0), factor);
     }
 
     public Color getColor(double x, double y)

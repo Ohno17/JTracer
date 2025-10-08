@@ -1,11 +1,19 @@
 package tracer.mesh;
 
+import java.util.List;
+
 import tracer.vector.Color;
+import tracer.vector.Vector3;
+import tracer.reader.property.InvalidPropertyException;
+import tracer.reader.property.InvalidPropertyNameException;
+import tracer.reader.property.Property;
+import tracer.reader.property.PropertyConsumer;
+import tracer.reader.property.PropertyValue;
 
 /**
  * Represents the characteristics of the material of a mesh.
  */
-public class Material
+public class Material implements PropertyConsumer
 {
     
     private Color color;
@@ -87,6 +95,31 @@ public class Material
             return new Material(this);
         }
 
+    }
+
+    @Override
+    public void apply(List<Property> properties) throws InvalidPropertyException
+    {
+        for (Property property : properties)
+        {
+            switch (property.getName())
+            {
+                case "color":
+                    color = ((Vector3) property.getValue(PropertyValue.Type.VECTOR3)).toColor();
+                    break;
+                case "roughness":
+                    roughness = property.getValue(PropertyValue.Type.NUMBER);
+                    break;
+                case "emissionColor":
+                    emissionColor = ((Vector3) property.getValue(PropertyValue.Type.VECTOR3)).toColor();
+                    break;
+                case "emissionStrength":
+                    emissionStrength = property.getValue(PropertyValue.Type.NUMBER);
+                    break;
+                default:
+                    throw new InvalidPropertyNameException(this, property.getName());
+            }
+        }
     }
 
 }

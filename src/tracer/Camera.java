@@ -15,13 +15,6 @@ public class Camera
     private double fieldOfViewX;
     private double fieldOfViewY;
 
-    public Camera()
-    {
-        this.position = new Vector3(0, 0, 0);
-        this.forward = new Vector3(0, 0, 1);
-        this.setFieldOfView(80, 1d / 1d);
-    }
-
     public Camera(double fieldOfViewDegrees, double aspectRatio)
     {
         this.position = new Vector3(0, 0, 0);

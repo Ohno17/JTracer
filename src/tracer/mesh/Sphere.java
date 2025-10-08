@@ -1,7 +1,13 @@
 package tracer.mesh;
 
+import java.util.List;
+
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
+import tracer.reader.property.InvalidPropertyException;
+import tracer.reader.property.InvalidPropertyNameException;
+import tracer.reader.property.Property;
+import tracer.reader.property.PropertyValue;
 import tracer.vector.Vector3;
 /**
  * Represents a sphere that can be intersected with a ray.
@@ -43,6 +49,25 @@ public class Sphere extends Mesh
             );
         }
         return new RayInfo(false);
+    }
+
+    @Override
+    public void apply(List<Property> properties) throws InvalidPropertyException
+    {
+        for (Property property : properties)
+        {
+            switch (property.getName())
+            {
+                case "center":
+                    center = property.getValue(PropertyValue.Type.VECTOR3);
+                    break;
+                case "radius":
+                    radius = property.getValue(PropertyValue.Type.NUMBER);
+                    break;
+                default:
+                    throw new InvalidPropertyNameException(this, property.getName());
+            }
+        }
     }
 
 }

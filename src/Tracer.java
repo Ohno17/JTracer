@@ -2,15 +2,14 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Path;
 
 import javax.swing.JPanel;
 
 import tracer.Scene;
-import tracer.mesh.Material;
-import tracer.mesh.Plane;
-import tracer.mesh.Sphere;
 import tracer.vector.Color;
-import tracer.vector.Vector3;
+import tracer.reader.SceneReader;
 /**
  * Holds a ray tracer to display in a swing context.
  * @author ajaysri5715
@@ -23,34 +22,21 @@ public class Tracer extends JPanel
 
     private int raysPerPixel = 10;
 
-    public Tracer(Dimension size)
+    public Tracer(Dimension size, String path)
     {
         setPreferredSize(size);
 
         image = new BufferedImage((int) size.getWidth(), (int) size.getHeight(), BufferedImage.TYPE_INT_RGB);
         scene = new Scene(10);
-
-        // Create walls
-        Plane myp5 = new Plane(new Vector3(0, 1, 0).normalize(), new Vector3(0, -1, 0));
-        myp5.setMaterial(new Material(new Color(200, 100, 50)));
-        scene.add(myp5);
-
-        // Create sphere
-        Sphere mys2 = new Sphere(new Vector3(0, 1, 5), 2);
-        mys2.setMaterial(new Material.Builder(new Color(255, 255, 255))
-            .setEmission(new Color(255, 255, 255), 1)
-            .build());
-        scene.add(mys2);
-
-        Sphere mys3 = new Sphere(new Vector3(1, -0.5, 2), 0.5);
-        mys3.setMaterial(new Material(new Color(200, 50, 10)));
-        scene.add(mys3);
-
-        Sphere mys1 = new Sphere(new Vector3(-1, -0.5, 3), 0.5);
-        mys1.setMaterial(new Material.Builder(new Color(20, 200, 80))
-            .setRoughness(0)
-            .build());
-        scene.add(mys1);
+        
+        try
+        {
+            SceneReader.readInto(scene, Path.of(path));
+        }
+        catch (IOException exception)
+        {
+            System.err.println("Scene file not found");
+        }
     }
 
     public void render()
@@ -75,6 +61,22 @@ public class Tracer extends JPanel
         }
 
         repaint();
+    }
+
+    public void reloadScene(String path)
+    {
+        Scene newScene = new Scene(10);
+        boolean sceneFileGood = false;
+        try
+        {
+            sceneFileGood = SceneReader.readInto(newScene, Path.of(path));
+        }
+        catch (IOException exception)
+        {
+            System.err.println("Scene file not found");
+            return;
+        }
+        if (sceneFileGood) this.scene = newScene;
     }
 
     @Override
