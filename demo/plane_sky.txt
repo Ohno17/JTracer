@@ -1,0 +1,47 @@
+#DEMO Scene
+# THree balls on a plane and the sky
+
+Material planeMat {
+    color = [0.8, 0.6 ,0.3];roughness = 0.89;
+}
+
+Material lightBall {
+    color=[0.99, 0.99, 0.99];
+    emissionStrength= 1;
+    emissionColor =[1, 1, 1];
+}
+
+Material ball1
+{
+    color = [1, 1, 0];
+    roughness = 0.12;
+}
+
+Material ball2 {color = [0.1, 0.3 ,0.8];roughness = 0.9;}
+
+# makes a sphere in the scene
+Sphere {
+    center =   [-3, 0, 7];
+    radius =    1;
+    material =  ball1;
+}
+
+Sphere {
+    center =   [2, 0, 4];
+    radius =    1;
+    material =  ball2;
+}
+
+Sphere
+{
+    center = [0, 2.5 - 1, 10];
+    radius= 2.5;
+    material = lightBall;
+}
+
+# Floor
+Plane {
+    center = [0, -1, 10];
+    normal = [0, 1, 0];
+    material = planeMat;
+}

@@ -34,6 +34,11 @@ public abstract class BaseVector3<T extends BaseVector3<?>> implements Iterable<
         return createNew(-x, -y, -z);
     }
 
+    public T inverse()
+    {
+        return createNew(1 / x, 1 / y, 1 / z);
+    }
+
     public T add(BaseVector3<?> other)
     {
         return createNew(this.x + other.x, this.y + other.y, this.z + other.z);

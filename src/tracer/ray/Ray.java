@@ -1,5 +1,7 @@
 package tracer.ray;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import tracer.vector.Vector3;
 
 /**
@@ -35,9 +37,10 @@ public class Ray
 
     private Vector3 getDiffuseReflection(Vector3 normal)
     {
-        double x = Math.random() * 2 - 1;
-        double y = Math.random() * 2 - 1;
-        double z = Math.random() * 2 - 1;
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        double x = rand.nextDouble() * 2 - 1;
+        double y = rand.nextDouble() * 2 - 1;
+        double z = rand.nextDouble() * 2 - 1;
         Vector3 randomDirection = new Vector3(x, y, z).normalize();
         if (normal.dot(randomDirection) >= 0) return randomDirection;
         else return randomDirection.negative();

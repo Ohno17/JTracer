@@ -1,0 +1,62 @@
+#DEMO Scene
+# A ball in a small room with mirror walls
+
+Material mirror {
+    color = [0.99,0.99,0.99];
+    roughness = 0;
+}
+
+Material ball {
+    color=[0.99, 0.67, 0.34];
+    emissionStrength= 0.5;
+    emissionColor =[0.99, 0.67, 0.34];
+}
+
+# makes a sphere in the scene
+Sphere {
+    center =   [0, -0.5, 4];
+    radius =    1;
+    material =  ball;
+}
+
+# Floor
+Plane {
+    center = [0, -1.5, 10];
+    normal = [0, 1, 0];
+    material = mirror;
+}
+
+# Ceiling
+Plane {
+    center = [0, 4, 10];
+    normal = [0, -1, 0];
+    material = mirror;
+}
+
+# Left wall
+Plane {
+    center = [-2.5, 0, 10];
+    normal = [1, 0, 0];
+    material = mirror;
+}
+
+# Right wall
+Plane {
+    center = [2.5, 0, 10];
+    normal = [-1, 0, 0];
+    material = mirror;
+}
+
+# Back wall
+Plane {
+    center = [0, 0, 6];
+    normal = [0, 0, -1];
+    material = mirror;
+}
+
+# fromt wll
+Plane {
+    center = [0, 0, -1];
+    normal = [0, 0, 1];
+    material = mirror;
+}

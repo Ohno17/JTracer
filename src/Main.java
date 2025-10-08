@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 
 /**
@@ -13,7 +14,7 @@ import javax.swing.JFrame;
 public class Main
 {
 
-    private static final String SCENE_FILE_PATH = "scene.txt";
+    private static String SCENE_FILE_PATH = "demo/plane_sky.txt";
 
     private static final Dimension RENDER_WINDOW_SIZE = new Dimension(600, 600);
     private static final Dimension CONTROL_WINDOW_SIZE = new Dimension(350, 500);
@@ -53,10 +54,20 @@ public class Main
         });
         controlFrame.add(reloadButton);
 
+        String[] choices = {"demo/plane_sky.txt", "demo/mirror_room.txt", "demo/ball_scene.txt"};
+        JComboBox<String> comboBox = new JComboBox<>(choices);
+        comboBox.addActionListener(e -> {
+            String selectedItem = (String) comboBox.getSelectedItem();
+            SCENE_FILE_PATH = selectedItem;
+            tracer.reloadScene(SCENE_FILE_PATH);
+        });
+        controlFrame.add(comboBox);
+
         controlFrame.setLayout(new FlowLayout());
         controlFrame.pack();
 
         controlFrame.setVisible(true);
+        tracer.render();
     }
 
 }

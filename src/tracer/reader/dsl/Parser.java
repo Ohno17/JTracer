@@ -222,7 +222,7 @@ public class Parser
         advance();
 
         while (!atEnd()) {
-            if (previous().type == SEMICOLON) return;
+            if (previous().type == CURLY_CLOSE) return;
             advance();
         }
     }
