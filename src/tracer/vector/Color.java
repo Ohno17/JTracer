@@ -49,7 +49,7 @@ public class Color extends BaseVector3<Color>
     @Override
     public String toString()
     {
-        return "R: " + x + " G: " + y + " B: " + z;
+        return "[R: " + x + " G: " + y + " B: " + z + "]";
     }
 
 }

@@ -16,18 +16,23 @@ public class RayInfo
 
     public Material material;
 
-    public RayInfo(boolean hit)
+    public double u;
+    public double v;
+
+    public RayInfo()
     {
-        this.hit = hit;
+        this.hit = false;
         this.distance = Double.POSITIVE_INFINITY;
     }
 
-    public RayInfo(double distance, Vector3 point, Vector3 normal)
+    public RayInfo(double distance, Vector3 point, Vector3 normal, double u, double v)
     {
         this.hit = true;
         this.distance = distance;
         this.point = point;
         this.normal = normal;
+        this.u = u;
+        this.v = v;
     }
 
 }

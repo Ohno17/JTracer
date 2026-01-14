@@ -17,6 +17,7 @@ public class Material implements PropertyConsumer
 {
     
     private Color color;
+    private Texture texture;
 
     private double roughness;
 
@@ -26,6 +27,7 @@ public class Material implements PropertyConsumer
     public Material(Color color)
     {
         this.color = color;
+        this.texture = null;
         this.roughness = 0.5;
         this.emissionColor = new Color(0, 0, 0);
         this.emissionStrength = 0;
@@ -34,6 +36,7 @@ public class Material implements PropertyConsumer
     private Material(Builder builder)
     {
         this.color = builder.color;
+        this.texture = builder.texture;
         this.roughness = builder.roughness;
         this.emissionColor = builder.emissionColor;
         this.emissionStrength = builder.emissionStrength;
@@ -42,6 +45,11 @@ public class Material implements PropertyConsumer
     public Color getColor()
     {
         return color;
+    }
+
+    public Texture getTexture()
+    {
+        return texture;
     }
 
     public double getRoughness()
@@ -66,6 +74,7 @@ public class Material implements PropertyConsumer
     {
 
         public Color color;
+        public Texture texture;
 
         public double roughness = 0.5;
 
@@ -75,6 +84,12 @@ public class Material implements PropertyConsumer
         public Builder(Color color)
         {
             this.color = color;
+        }
+
+        public Builder setTexture(Texture texture)
+        {
+            this.texture = texture;
+            return this;
         }
 
         public Builder setRoughness(double roughness)
@@ -106,6 +121,9 @@ public class Material implements PropertyConsumer
             {
                 case "color":
                     color = ((Vector3) property.getValue(PropertyValue.Type.VECTOR3)).toColor();
+                    break;
+                case "texture":
+                    texture = new Texture((String) property.getValue(PropertyValue.Type.STRING));
                     break;
                 case "roughness":
                     roughness = property.getValue(PropertyValue.Type.NUMBER);

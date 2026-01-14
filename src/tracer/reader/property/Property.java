@@ -11,12 +11,6 @@ public class Property
         this.value = new PropertyValue(type, value);
     }
 
-    public Property(String name, String value)
-    {
-        this.name = name;
-        this.value = new PropertyValue(value);
-    }
-
     public String getName()
     {
         return name;

@@ -15,6 +15,8 @@ import tracer.vector.Vector3;
 public class Triangle extends Mesh
 {
 
+    private static final double ELIPSON = Math.ulp(1d);
+
     private Vector3 a;
     private Vector3 b;
     private Vector3 c;
@@ -44,15 +46,17 @@ public class Triangle extends Mesh
         double w = 1 - u - v;
 
         // Initialize hit info
-        RayInfo hitInfo = new RayInfo(false);
+        RayInfo hitInfo = new RayInfo();
         boolean cullBackface = false;
-        boolean keep = cullBackface ? determinant >= 1E-8 : Math.abs(determinant) >= 1E-8;
+        boolean keep = cullBackface ? determinant >= ELIPSON : Math.abs(determinant) >= ELIPSON;
         hitInfo.hit = keep && dst > 0 && u >= 0 && v >= 0 && w >= 0;
         //Vector3 smoothNormal = normalize(this.normA * w + tri.normB * u + tri.normC * v);
         //hitInfo.normal = smoothNormal * sign(determinant);
         hitInfo.normal = triFaceVector.normalize();
         hitInfo.point = ray.origin.add(ray.direction.multiply(dst));
         hitInfo.distance = dst;
+        hitInfo.u = u;
+        hitInfo.v = v;
         return hitInfo;
     }
 

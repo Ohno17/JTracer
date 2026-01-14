@@ -6,7 +6,7 @@ public class DSL
 {
 
     public static boolean hadError = false;
-    public static boolean hadRuntimeError = false;
+    public static boolean hadProcessingError = false;
     
     private final String source;
 
@@ -28,7 +28,7 @@ public class DSL
         Processor processor = new Processor();
         List<DSLBlock> blocks = processor.process(statements);
 
-        if (hadRuntimeError) return null;
+        if (hadProcessingError) return null;
 
         return blocks;
     }
@@ -50,9 +50,9 @@ public class DSL
         }
     }
 
-    public static void runtimeError(Processor.ProcessorException exception) {
-        System.err.println(exception.getMessage() + "\n[line " + exception.token.line + "]");
-        hadRuntimeError = true;
+    public static void processingError(Processor.ProcessorException exception) {
+        System.err.println("[line " + exception.token.line + "] " + exception.getMessage());
+        hadProcessingError = true;
     }
 
     private static void report(int line, String where, String message)

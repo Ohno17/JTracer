@@ -41,14 +41,20 @@ public class Sphere extends Mesh
         if (discriminant >= 0)
         {
             double t = ((-b) - Math.sqrt(discriminant)) / (2d * a);
+            Vector3 hitPoint = ray.origin.add(ray.direction.multiply(t));
+            Vector3 normal = hitPoint.subtract(center).normalize();
+            double u = 0.5 + (Math.atan2(normal.x, normal.z) / (2 * Math.PI));
+            double v = 0.5 + (Math.asin(normal.y) / Math.PI);
 
             if (t >= 0) return new RayInfo(
                 t,
-                ray.origin.add(ray.direction.multiply(t)),
-                ray.origin.add(ray.direction.multiply(t)).subtract(center).normalize()
+                hitPoint,
+                normal,
+                u,
+                v
             );
         }
-        return new RayInfo(false);
+        return new RayInfo();
     }
 
     @Override

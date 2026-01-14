@@ -25,17 +25,14 @@ public class Texture {
     }
 
     public Color sample(double u, double v) {
-        // Clamp u and v to [0, 1] to prevent out-of-bounds errors
         u = Math.max(0, Math.min(1, u));
         v = Math.max(0, Math.min(1, v));
 
-        // Map [0, 1] to pixel coordinates [0, width-1]
-        int x = (int) (u * (width - 1));
-        int y = (int) (v * (height - 1));
+        int x = (int)((Math.abs(u) % 1.0) * (width - 1));
+        int y = (int)((Math.abs(v) % 1.0) * (height - 1));
 
         int rgb = image.getRGB(x, y);
 
-        // Extract color components (assuming standard ARGB format)
         int r = (rgb >> 16) & 0xFF;
         int g = (rgb >> 8) & 0xFF;
         int b = rgb & 0xFF;

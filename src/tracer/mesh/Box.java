@@ -15,6 +15,8 @@ import tracer.vector.Vector3;
 public class Box extends Mesh
 {
 
+    private static final double ELIPSON = Math.ulp(1d);
+
     private Vector3 min;
     private Vector3 max;
 
@@ -46,7 +48,7 @@ public class Box extends Mesh
         }
 
         if ((tMin > tyMax) || (tyMin > tMax))
-            return new RayInfo(false);
+            return new RayInfo();
 
         if (tyMin > tMin)
             tMin = tyMin;
@@ -63,7 +65,7 @@ public class Box extends Mesh
         }
 
         if ((tMin > tzMax) || (tzMin > tMax))
-            return new RayInfo(false);
+            return new RayInfo();
 
         if (tzMin > tMin)
             tMin = tzMin;
@@ -72,25 +74,49 @@ public class Box extends Mesh
 
         // Ignore intersections behind the ray origin
         if (tMax < 0)
-            return new RayInfo(false);
+            return new RayInfo();
 
         double tHit = tMin >= 0 ? tMin : tMax;
 
         Vector3 hitPoint = ray.origin.add(ray.direction.multiply(tHit));
+        Vector3 normal = new Vector3(0, 0, 0);
+        double u = 0, v = 0;
 
-        // Calculate normal
-        Vector3 normal = null;
-        final double epsilon = 1e-5;
+        if (Math.abs(hitPoint.x - min.x) < ELIPSON) {
+            normal = new Vector3(-1, 0, 0);
+            u = (hitPoint.z - min.z) / (max.z - min.z);
+            v = (hitPoint.y - min.y) / (max.y - min.y);
+        } 
+        else if (Math.abs(hitPoint.x - max.x) < ELIPSON) {
+            normal = new Vector3(1, 0, 0);
+            u = (hitPoint.z - min.z) / (max.z - min.z);
+            v = (hitPoint.y - min.y) / (max.y - min.y);
+        } 
+        else if (Math.abs(hitPoint.y - min.y) < ELIPSON) {
+            normal = new Vector3(0, -1, 0);
+            u = (hitPoint.x - min.x) / (max.x - min.x);
+            v = (hitPoint.z - min.z) / (max.z - min.z);
+        } 
+        else if (Math.abs(hitPoint.y - max.y) < ELIPSON) {
+            normal = new Vector3(0, 1, 0);
+            u = (hitPoint.x - min.x) / (max.x - min.x);
+            v = (hitPoint.z - min.z) / (max.z - min.z);
+        } 
+        else if (Math.abs(hitPoint.z - min.z) < ELIPSON) {
+            normal = new Vector3(0, 0, -1);
+            u = (hitPoint.x - min.x) / (max.x - min.x);
+            v = (hitPoint.y - min.y) / (max.y - min.y);
+        } 
+        else if (Math.abs(hitPoint.z - max.z) < ELIPSON) {
+            normal = new Vector3(0, 0, 1);
+            u = (hitPoint.x - min.x) / (max.x - min.x);
+            v = (hitPoint.y - min.y) / (max.y - min.y);
+        }
 
-        if (Math.abs(hitPoint.x - min.x) < epsilon) normal = new Vector3(-1, 0, 0);
-        else if (Math.abs(hitPoint.x - max.x) < epsilon) normal = new Vector3(1, 0, 0);
-        else if (Math.abs(hitPoint.y - min.y) < epsilon) normal = new Vector3(0, -1, 0);
-        else if (Math.abs(hitPoint.y - max.y) < epsilon) normal = new Vector3(0, 1, 0);
-        else if (Math.abs(hitPoint.z - min.z) < epsilon) normal = new Vector3(0, 0, -1);
-        else if (Math.abs(hitPoint.z - max.z) < epsilon) normal = new Vector3(0, 0, 1);
-        else normal = new Vector3(0, 0, 0); // Should not happen
+        u = Math.max(0, Math.min(1, u));
+        v = Math.max(0, Math.min(1, v));
 
-        return new RayInfo(tHit, hitPoint, normal);
+        return new RayInfo(tHit, hitPoint, normal, u, v);
     }
 
     @Override

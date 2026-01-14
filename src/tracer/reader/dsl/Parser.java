@@ -56,7 +56,7 @@ public class Parser
 
             consume(CURLY_OPEN, "Expect '{' before block body");
 
-            ArrayList<Statement.Property> properties = new ArrayList<>();
+            ArrayList<Statement.PropertyDefinition> properties = new ArrayList<>();
             while (!check(CURLY_CLOSE) && !atEnd())
             {
                 properties.add(property());
@@ -64,7 +64,7 @@ public class Parser
 
             consume(CURLY_CLOSE, "Expect '}' after block body.");
 
-            return new Statement.Block(type, name, properties);
+            return new Statement.BlockDefinition(type, name, properties);
         }
         catch (ParseException exception)
         {
@@ -73,14 +73,14 @@ public class Parser
         }
     }
 
-    private Statement.Property property()
+    private Statement.PropertyDefinition property()
     {
         Token name = consume(IDENTIFIER, "Expect parameter name");
         consume(EQUALS, "Expect '=' in property");
         Expression value = expression();
 
         consume(SEMICOLON, "Expect ';' after property");
-        return new Statement.Property(name, value);
+        return new Statement.PropertyDefinition(name, value);
     }
 
     private Expression expression()

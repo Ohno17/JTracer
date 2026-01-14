@@ -3,15 +3,14 @@ package tracer.reader.dsl;
 import java.util.ArrayList;
 import java.util.List;
 
-import tracer.reader.dsl.Expression.*;
-import tracer.reader.dsl.Statement.*;
+import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
 import tracer.vector.BaseVector3;
 import tracer.vector.Vector3;
 
 public class Processor implements Expression.Visitor<Object>, Statement.Visitor<Void>
 {
-
+    private static ArrayList<Property> currentBlockProperties = new ArrayList<>();
     private ArrayList<DSLBlock> blocks = new ArrayList<>();
 
     public static class ProcessorException extends RuntimeException
@@ -36,20 +35,20 @@ public class Processor implements Expression.Visitor<Object>, Statement.Visitor<
         }
         catch(ProcessorException exception)
         {
-            DSL.runtimeError(exception);
+            DSL.processingError(exception);
         }
 
         return blocks;
     }
 
     @Override
-    public Object visitLiteralExpression(Literal expression)
+    public Object visitLiteralExpression(Expression.Literal expression)
     {
         return expression.value;
     }
 
     @Override
-    public Object visitUnaryExpression(Unary expression)
+    public Object visitUnaryExpression(Expression.Unary expression)
     {
         Object right = expression.right.accept(this);
         checkNumberOperand(expression.operator, right);
@@ -64,7 +63,7 @@ public class Processor implements Expression.Visitor<Object>, Statement.Visitor<
     }
 
     @Override
-    public Object visitBinaryExpression(Binary expression)
+    public Object visitBinaryExpression(Expression.Binary expression)
     {
         Object left = expression.left.accept(this);
         Object right = expression.right.accept(this); 
@@ -86,51 +85,56 @@ public class Processor implements Expression.Visitor<Object>, Statement.Visitor<
     }
 
     @Override
-    public Object visitGroupingExpression(Grouping expression)
+    public Object visitGroupingExpression(Expression.Grouping expression)
     {
         return expression.expression.accept(this);
     }
 
     @Override
-    public Object visitListExpression(tracer.reader.dsl.Expression.List list)
+    public Object visitListExpression(Expression.List list)
     {
         if (list.values.size() != 3)
             throw new ProcessorException(list.listToken, "Vectors must be of length 3.");
         
-        double x = (double) list.values.get(0).accept(this);
-        double y = (double) list.values.get(1).accept(this);
-        double z = (double) list.values.get(2).accept(this);
-        return new Vector3(x, y, z);
+        try
+        {
+            double x = (double) list.values.get(0).accept(this);
+            double y = (double) list.values.get(1).accept(this);
+            double z = (double) list.values.get(2).accept(this);
+
+            return new Vector3(x, y, z);
+        }
+        catch (ClassCastException exception)
+        {
+            throw new ProcessorException(list.listToken, "Vector values must be numbers.");
+        }
     }
 
     @Override
-    public Void visitBlockStatement(Block statement)
+    public Void visitBlockDefinitionStatement(Statement.BlockDefinition statement)
     {
-        ArrayList<tracer.reader.property.Property> realProperties = new ArrayList<>();
-        for (Statement.Property property : statement.properties)
+        for (Statement.PropertyDefinition property : statement.properties)
         {
             property.accept(this);
-
-            Object value = property.value.accept(this);
-
-            PropertyValue.Type type = null;
-            if (value instanceof BaseVector3) type = PropertyValue.Type.VECTOR3;
-            else if (value instanceof String) type = PropertyValue.Type.STRING;
-            else type = PropertyValue.Type.NUMBER;
-
-            realProperties.add(new tracer.reader.property.Property(property.name.lexeme, type, value));
         }
 
-        if (statement.name == null) blocks.add(new DSLBlock(statement.type.lexeme, realProperties));
-        else blocks.add(new DSLBlock(statement.type.lexeme, statement.name.lexeme, realProperties));
+        if (statement.name == null) blocks.add(new DSLBlock(statement.type.lexeme, currentBlockProperties));
+        else blocks.add(new DSLBlock(statement.type.lexeme, statement.name.lexeme, currentBlockProperties));
+        currentBlockProperties = new ArrayList<>();
         return null;
     }
 
     @Override
-    public Void visitPropertyStatement(Property property)
+    public Void visitPropertyDefinitionStatement(Statement.PropertyDefinition property)
     {
-        // TODO: Validate property types and names here
-        // System.out.println(property.name.lexeme + " = " + stringify(property.value.accept(this)));
+        Object value = property.value.accept(this);
+
+        PropertyValue.Type type = null;
+        if (value instanceof BaseVector3) type = PropertyValue.Type.VECTOR3;
+        else if (value instanceof String) type = PropertyValue.Type.STRING;
+        else type = PropertyValue.Type.NUMBER;
+
+        currentBlockProperties.add(new Property(property.name.lexeme, type, value));
         return null;
     }
 

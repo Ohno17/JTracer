@@ -1,18 +1,22 @@
 package tracer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import tracer.mesh.Material;
 import tracer.mesh.Mesh;
 import tracer.mesh.Texture;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
+import tracer.reader.property.InvalidPropertyException;
+import tracer.reader.property.Property;
+import tracer.reader.property.PropertyConsumer;
 import tracer.vector.Color;
 import tracer.vector.Vector3;
 /**
  * Represents a scene that can be filled with meshes.
  */
-public class Scene
+public class Scene implements PropertyConsumer
 {
 
     public static final Vector3 UP = new Vector3(0, 1, 0);
@@ -21,7 +25,7 @@ public class Scene
 
     private Camera camera;
     private ArrayList<Mesh> meshes;
-    private Texture skyTexture = new Texture("image.png");
+    private Texture skyTexture;
 
     public Scene(int bounces)
     {
@@ -49,9 +53,14 @@ public class Scene
         meshes.add(mesh);
     }
 
+    public void setBackgroundTexture(Texture texture)
+    {
+        this.skyTexture = texture;
+    }
+
     private RayInfo intersect(Ray ray)
     {
-        RayInfo closestInfo = new RayInfo(false);
+        RayInfo closestInfo = new RayInfo();
 
         for (Mesh mesh : meshes)
         {
@@ -68,6 +77,11 @@ public class Scene
 
     private Color getBackgroundColor(Ray ray) 
     {
+        if (skyTexture == null) {
+            double factor = (-ray.direction.y + 1) / 2d;
+            return new Color(180, 180, 255).lerp(new Color(0, 0, 0), factor);
+        }
+
         Vector3 dir = ray.direction.normalize();
 
         double theta = Math.atan2(dir.z, dir.x);
@@ -96,11 +110,17 @@ public class Scene
             {
                 ray.origin = info.point;
                 ray.reflect(info.normal, info.material.getRoughness());
-
+                
                 Material material = info.material;
+                Color surfaceColor = material.getColor(); 
+                if (material.getTexture() != null) {
+                    Color texColor = material.getTexture().sample(info.u, info.v);
+                    surfaceColor = surfaceColor.multiply(texColor);
+                }
+
                 Color emission = material.getEmissionColor().multiply(material.getEmissionStrength());
                 rayLightColor = rayLightColor.add(emission.multiply(rayColor));
-                rayColor = rayColor.multiply(material.getColor());
+                rayColor = rayColor.multiply(surfaceColor);
             } else {
                 rayLightColor = rayLightColor.add(getBackgroundColor(ray).multiply(rayColor));
                 break;
@@ -108,6 +128,12 @@ public class Scene
         }
         
         return rayLightColor;
+    }
+
+    @Override
+    public void apply(List<Property> properties) throws InvalidPropertyException
+    {
+        // TODO: e
     }
 
 }

@@ -37,14 +37,29 @@ public class Plane extends Mesh
         {
             Vector3 transformedRayOrigin = center.subtract(ray.origin);
             double t = normal.dot(transformedRayOrigin) / denominator;
-            if (t >= ELIPSON) return new RayInfo(
-                t,
-                ray.origin.add(ray.direction.multiply(t)),
-                normal.dot(ray.direction) < 0 ? normal : normal.negative()
-            );
+            if (t >= ELIPSON)
+            {
+                Vector3 hitPoint = ray.origin.add(ray.direction.multiply(t));
+                Vector3 finalNormal = denominator < 0 ? normal : normal.negative();
+
+                Vector3 helper = Math.abs(normal.y) < 0.99 ? new Vector3(0, 1, 0) : new Vector3(1, 0, 0);
+                Vector3 uAxis = normal.cross(helper).normalize();
+                Vector3 vAxis = normal.cross(uAxis).normalize();
+                Vector3 hitOffset = hitPoint.subtract(center);
+                double u = hitOffset.dot(uAxis);
+                double v = hitOffset.dot(vAxis);
+
+                return new RayInfo(
+                    t,
+                    hitPoint,
+                    finalNormal,
+                    u,
+                    v
+                );
+            }
         }
 
-        return new RayInfo(false);
+        return new RayInfo();
     }
 
     @Override
