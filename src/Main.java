@@ -2,6 +2,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -9,7 +15,6 @@ import javax.swing.JFrame;
 
 /**
  * Simulate realistic light reflection and refraction in digital environments.
- * @author ajaysri5715
  */
 public class Main
 {
@@ -54,7 +59,18 @@ public class Main
         });
         controlFrame.add(reloadButton);
 
-        String[] choices = {"demo/plane_sky.txt", "demo/mirror_room.txt", "demo/ball_scene.txt"};
+        String[] choices;
+        List<String> choicesList;
+        try (Stream<Path> walk = Files.walk(Paths.get("demo"))) {
+            choicesList = walk
+                .filter(Files::isRegularFile)
+                .filter(path -> path.toString().endsWith(".txt"))
+                .map(Path::toString)
+                .collect(Collectors.toList());
+            choices = new String[choicesList.size()];
+            choicesList.toArray(choices);
+        }
+
         JComboBox<String> comboBox = new JComboBox<>(choices);
         comboBox.addActionListener(e -> {
             String selectedItem = (String) comboBox.getSelectedItem();

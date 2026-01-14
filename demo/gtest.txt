@@ -1,0 +1,79 @@
+#no n Scene
+# A reflective sphere, a glowing cube, and colored walls
+
+Material white {color = [0.9, 0.9, 0.9]; roughness = 0.6;}
+Material yellow {color = [0.9, 0.9, 0.1]; roughness = 0.7;}
+Material magenta {color = [0.9, 0.1, 0.9]; roughness = 0.7;}
+Material cyan {color = [0.1, 0.9, 0.9]; roughness = 0.7;}
+
+Material light {
+    color=[1, 1, 1];
+    emissionStrength= 2;
+    emissionColor =[1, 1, 1];
+}
+
+Material reflectiveSphere {
+    color = [1, 1, 1];
+    roughness = 0;
+}
+
+Material glossyBox {
+    color = [0.7, 0.3, 0.2];
+    roughness = 0.3;
+}
+
+# Reflective sphere in center
+Sphere {
+    center = [0, 0, 5];
+    radius = 1;
+    material = reflectiveSphere;
+}
+
+# Glowing cube above sphere
+Box {
+    min = [-0.5, 2, 4.5];
+    max = [0.5, 3, 5.5];
+    material = light;
+}
+
+# Floor
+Plane {
+    center = [0, -1, 5];
+    normal = [0, 1, 0];
+    material = white;
+}
+
+# Ceiling
+Plane {
+    center = [0, 4, 5];
+    normal = [0, -1, 0];
+    material = white;
+}
+
+# Back wall
+Plane {
+    center = [0, 0, 10];
+    normal = [0, 0, -1];
+    material = cyan;
+}
+
+# Left wall
+Plane {
+    center = [-3, 0, 5];
+    normal = [1, 0, 0];
+    material = magenta;
+}
+
+# Right wall
+Plane {
+    center = [3, 0, 5];
+    normal = [-1, 0, 0];
+    material = yellow;
+}
+
+# Front wall (optional)
+Plane {
+    center = [0, 0, 0];
+    normal = [0, 0, 1];
+    material = white;
+}
