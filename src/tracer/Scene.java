@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import tracer.mesh.Material;
 import tracer.mesh.Mesh;
+import tracer.mesh.Texture;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.vector.Color;
@@ -20,6 +21,7 @@ public class Scene
 
     private Camera camera;
     private ArrayList<Mesh> meshes;
+    private Texture skyTexture = new Texture("image.png");
 
     public Scene(int bounces)
     {
@@ -64,10 +66,17 @@ public class Scene
         return closestInfo;
     }
 
-    private Color getBackgroundColor(Ray ray)
+    private Color getBackgroundColor(Ray ray) 
     {
-        double factor = (-ray.direction.y + 1) / 2d;
-        return new Color(180, 180, 255).lerp(new Color(0, 0, 0), factor);
+        Vector3 dir = ray.direction.normalize();
+
+        double theta = Math.atan2(dir.z, dir.x);
+        double phi = Math.asin(dir.y);
+
+        double u = (theta + Math.PI) / (2.0 * Math.PI);
+        double v = (phi + (Math.PI / 2.0)) / Math.PI;
+
+        return skyTexture.sample(u, 1.0 - v);
     }
 
     public Color getColor(double x, double y)
@@ -93,7 +102,7 @@ public class Scene
                 rayLightColor = rayLightColor.add(emission.multiply(rayColor));
                 rayColor = rayColor.multiply(material.getColor());
             } else {
-                rayLightColor = rayLightColor.add(rayColor.multiply(getBackgroundColor(ray)));
+                rayLightColor = rayLightColor.add(getBackgroundColor(ray).multiply(rayColor));
                 break;
             }
         }

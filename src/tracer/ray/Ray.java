@@ -21,8 +21,9 @@ public class Ray
 
     public void reflect(Vector3 normal, double roughness)
     {
-        Vector3 combinedReflectionDirection = getDiffuseReflection(normal).multiply(roughness).add(getSpecularReflection(normal).multiply(1 - roughness));
-        this.direction = normal.add(combinedReflectionDirection).normalize();
+        Vector3 specularDir = getSpecularReflection(normal);
+        Vector3 diffuseDir = getDiffuseReflection(normal);
+        this.direction = specularDir.lerp(diffuseDir, roughness).normalize();
     }
 
     public void diffuselyReflect(Vector3 normal)
