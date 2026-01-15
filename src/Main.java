@@ -41,7 +41,8 @@ public class Main
         controlFrame.setSize(CONTROL_WINDOW_SIZE);
 
         JButton renderButton = new JButton("Render");
-        renderButton.addActionListener(new ActionListener() {
+        renderButton.addActionListener(new ActionListener()
+        {
             @Override
             public void actionPerformed(ActionEvent e)
             {
@@ -51,7 +52,8 @@ public class Main
         controlFrame.add(renderButton);
 
         JButton reloadButton = new JButton("Reload Scene File");
-        reloadButton.addActionListener(new ActionListener() {
+        reloadButton.addActionListener(new ActionListener()
+        {
             @Override
             public void actionPerformed(ActionEvent e)
             {
@@ -62,7 +64,8 @@ public class Main
 
         String[] choices;
         List<String> choicesList;
-        try (Stream<Path> walk = Files.walk(Paths.get("demo"))) {
+        try (Stream<Path> walk = Files.walk(Paths.get("demo")))
+        {
             choicesList = walk
                 .filter(Files::isRegularFile)
                 .filter(path -> path.toString().endsWith(".txt"))
@@ -73,10 +76,15 @@ public class Main
         }
 
         JComboBox<String> comboBox = new JComboBox<>(choices);
-        comboBox.addActionListener(e -> {
-            String selectedItem = (String) comboBox.getSelectedItem();
-            currentSceneFile = selectedItem;
-            tracer.reloadScene(currentSceneFile);
+        comboBox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String selectedItem = (String) comboBox.getSelectedItem();
+                currentSceneFile = selectedItem;
+                tracer.reloadScene(currentSceneFile);
+            }
         });
         controlFrame.add(comboBox);
 

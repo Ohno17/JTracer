@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 
 import tracer.Scene;
 import tracer.vector.Color;
-import tracer.reader.SceneReader;
+import tracer.reader.Reader;
 /**
  * Holds a ray tracer to display in a swing context.
  */
@@ -38,7 +38,7 @@ public class Tracer extends JPanel
         
         try
         {
-            SceneReader.readInto(scene, Path.of(path));
+            Reader.readInto(scene, Path.of(path));
         }
         catch (IOException exception)
         {
@@ -46,7 +46,8 @@ public class Tracer extends JPanel
         }
     }
 
-    public void render() {
+    public void render()
+    {
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -54,27 +55,36 @@ public class Tracer extends JPanel
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
         List<int[]> tiles = new ArrayList<>();
-        for (int tileX = 0; tileX < width; tileX += tileSize) {
-            for (int tileY = 0; tileY < height; tileY += tileSize) {
+        for (int tileX = 0; tileX < width; tileX += tileSize)
+        {
+            for (int tileY = 0; tileY < height; tileY += tileSize)
+            {
                 tiles.add(new int[]{tileX, tileY});
             }
         }
         tiles.sort(Comparator.comparingLong(coord -> mortonCode(coord[0], coord[1])));
 
-        for (int[] tile : tiles) {
+        for (int[] tile : tiles)
+        {
             final int startX = tile[0];
             final int startY = tile[1];
             final int endX = Math.min(startX + tileSize, width);
             final int endY = Math.min(startY + tileSize, height);
 
-            executor.submit(() -> {
+            executor.submit(() ->
+            {
                 try 
                 {
                     ThreadLocalRandom rand = ThreadLocalRandom.current();
-                    for (int y = startY; y < endY; y++) {
-                        for (int x = startX; x < endX; x++) {
+
+                    for (int y = startY; y < endY; y++)
+                    {
+                        for (int x = startX; x < endX; x++)
+                        {
+
                             Color pixelColor = new Color(0, 0, 0);
-                            for (int r = 0; r < raysPerPixel; r++) {
+                            for (int r = 0; r < raysPerPixel; r++)
+                            {
                                 double pX = (x + 0.4 * (rand.nextDouble() - 0.5)) / width;
                                 double pY = (y + 0.4 * (rand.nextDouble() - 0.5)) / height;
                                 pixelColor = pixelColor.add(scene.getColor(pX, pY));
@@ -82,7 +92,7 @@ public class Tracer extends JPanel
                             image.setRGB(x, y, pixelColor.divide(raysPerPixel).toBytes());
                         }
                     }
-                    // Repaint with 1px padding to prevent seams
+                    
                     repaint(startX - 1, startY - 1, (endX - startX) + 2, (endY - startY) + 2);
                 }
                 catch (Exception e) 
@@ -108,7 +118,7 @@ public class Tracer extends JPanel
         boolean sceneFileGood = false;
         try
         {
-            sceneFileGood = SceneReader.readInto(newScene, Path.of(path));
+            sceneFileGood = Reader.readInto(newScene, Path.of(path));
         }
         catch (IOException exception)
         {

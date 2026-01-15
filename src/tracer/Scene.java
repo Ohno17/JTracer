@@ -92,7 +92,7 @@ public class Scene implements PropertyConsumer
         double u = (theta + Math.PI) / (2.0 * Math.PI);
         double v = (phi + (Math.PI / 2.0)) / Math.PI;
 
-        return backgroundMaterial.sample(u, 1.0 - v);
+        return backgroundMaterial.sampleColor(u, 1.0 - v);
     }
 
     public Color getColor(double x, double y)
@@ -114,11 +114,13 @@ public class Scene implements PropertyConsumer
                 ray.reflect(info.normal, info.material.roughness);
                 
                 Material material = info.material;
-                Color surfaceColor = material.sample(info.u, info.v); 
-                Color emission = material.emissionColor.multiply(material.emissionStrength);
+                Color surfaceColor = material.sampleColor(info.u, info.v);
+                Color emission = material.sampleEmissionColor(info.u, info.v).multiply(material.emissionStrength);
                 rayLightColor = rayLightColor.add(emission.multiply(rayColor));
                 rayColor = rayColor.multiply(surfaceColor);
-            } else {
+            }
+            else
+            {
                 rayLightColor = rayLightColor.add(getBackgroundColor(ray).multiply(rayColor));
                 break;
             }

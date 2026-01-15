@@ -22,6 +22,7 @@ public class Material implements PropertyConsumer
     public double roughness;
 
     public Color emissionColor;
+    public Texture emissionTexture;
     public double emissionStrength;
 
     public Material()
@@ -29,15 +30,23 @@ public class Material implements PropertyConsumer
         this.color = new Color(1);
         this.texture = new Texture();
         this.roughness = 0.5;
-        this.emissionColor = new Color(0);
+        this.emissionColor = new Color(1);
+        this.emissionTexture = new Texture();
         this.emissionStrength = 0;
     }
 
-    public Color sample(double u, double v)
+    public Color sampleColor(double u, double v)
     {
         if (texture.exists())
             return texture.sample(u, v).multiply(color);
         return color;
+    }
+
+    public Color sampleEmissionColor(double u, double v)
+    {
+        if (emissionTexture.exists())
+            return emissionTexture.sample(u, v).multiply(emissionColor);
+        return emissionColor;
     }
 
     @Override
@@ -61,6 +70,12 @@ public class Material implements PropertyConsumer
                     break;
                 case "emissionColor":
                     emissionColor = ((Vector3) property.getValue(PropertyValue.Type.VECTOR3)).toColor();
+                    break;
+                case "emissionTexture":
+                    emissionTexture.setImagePath(property.getValue(PropertyValue.Type.STRING));
+                    break;
+                case "emissionTextureScale":
+                    emissionTexture.setScale(property.getValue(PropertyValue.Type.NUMBER));
                     break;
                 case "emissionStrength":
                     emissionStrength = property.getValue(PropertyValue.Type.NUMBER);

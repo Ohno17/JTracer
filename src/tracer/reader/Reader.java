@@ -22,7 +22,7 @@ import tracer.reader.property.PropertyValue;
 /**
  * Reads a file and stores its scene data into the given scene object.
  */
-public class SceneReader
+public class Reader
 {
     private static Scene scene;
     private static HashMap<String, Material> materialMap;
@@ -36,7 +36,7 @@ public class SceneReader
      */
     public static boolean readInto(Scene scene, Path path) throws IOException
     {
-        SceneReader.scene = scene;
+        Reader.scene = scene;
 
         String source = Files.readString(path, Charset.forName("UTF-8"));
 
