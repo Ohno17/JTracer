@@ -1,9 +1,13 @@
 package tracer.reader.property;
 
+import tracer.reader.ReaderDebugInfo;
+
 public class Property
 {
     private final String name;
     private final PropertyValue value;
+
+    public ReaderDebugInfo debugInfo;
 
     public Property(String name, PropertyValue.Type type, Object value)
     {

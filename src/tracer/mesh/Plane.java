@@ -83,7 +83,7 @@ public class Plane extends Mesh
                     center = property.getValue(PropertyValue.Type.VECTOR3);
                     break;
                 default:
-                    throw new InvalidPropertyNameException(this, property.getName());
+                    throw new InvalidPropertyNameException(this, property);
             }
         }
 

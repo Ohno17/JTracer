@@ -10,6 +10,7 @@ Scene {
 }
 
 Material planeMat {
+    srosa = "e";
     color = [0.8, 0.6 ,0.3];
     roughness = 0.89;
     texture = "texture/checker.png";

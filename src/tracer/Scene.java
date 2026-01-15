@@ -152,7 +152,7 @@ public class Scene implements PropertyConsumer
                     }
                     break;
                 default:
-                    throw new InvalidPropertyNameException(this, property.getName());
+                    throw new InvalidPropertyNameException(this, property);
             }
         }
     }

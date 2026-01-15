@@ -66,7 +66,7 @@ public class Material implements PropertyConsumer
                     emissionStrength = property.getValue(PropertyValue.Type.NUMBER);
                     break;
                 default:
-                    throw new InvalidPropertyNameException(this, property.getName());
+                    throw new InvalidPropertyNameException(this, property);
             }
         }
     }

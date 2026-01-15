@@ -2,6 +2,7 @@ package tracer.reader.dsl;
 
 import java.util.List;
 
+import tracer.reader.ReaderDebugInfo;
 import tracer.reader.property.Property;
 
 public class DSLBlock
@@ -10,6 +11,8 @@ public class DSLBlock
     public final String type;
     public final String name;
     public final List<Property> properties;
+
+    public ReaderDebugInfo debugInfo;
 
     public DSLBlock(String type, List<Property> properties)
     {

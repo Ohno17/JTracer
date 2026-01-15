@@ -16,3 +16,17 @@ Ray tracer in Java
 - [X] Demo scenes
 - [ ] Refraction
 - [ ] Triangle Meshes
+
+## DSL
+
+Structure
+```
+TypeName declName {
+    propertyName = 2.5;
+    propertyName = "value";
+    propertyName = [1, 2, 3];
+
+    propertyName = 2.5 + 7.5;
+    propertyName = [1 * 2, 1 - 2, 1 / 2];
+}
+```

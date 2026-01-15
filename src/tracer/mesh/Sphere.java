@@ -20,7 +20,7 @@ public class Sphere extends Mesh
 
     public Sphere()
     {
-        
+
     }
 
     public Sphere(Vector3 center, double radius)
@@ -76,7 +76,7 @@ public class Sphere extends Mesh
                     radius = property.getValue(PropertyValue.Type.NUMBER);
                     break;
                 default:
-                    throw new InvalidPropertyNameException(this, property.getName());
+                    throw new InvalidPropertyNameException(this, property);
             }
         }
     }

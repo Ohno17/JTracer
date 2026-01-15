@@ -3,6 +3,7 @@ package tracer.reader.dsl;
 import java.util.ArrayList;
 import java.util.List;
 
+import tracer.reader.ReaderDebugInfo;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
 import tracer.vector.BaseVector3;
@@ -118,8 +119,12 @@ public class Processor implements Expression.Visitor<Object>, Statement.Visitor<
             property.accept(this);
         }
 
-        if (statement.name == null) blocks.add(new DSLBlock(statement.type.lexeme, currentBlockProperties));
-        else blocks.add(new DSLBlock(statement.type.lexeme, statement.name.lexeme, currentBlockProperties));
+        DSLBlock block;
+        if (statement.name == null) block = new DSLBlock(statement.type.lexeme, currentBlockProperties);
+        else block = new DSLBlock(statement.type.lexeme, statement.name.lexeme, currentBlockProperties);
+        block.debugInfo = new ReaderDebugInfo(statement.type.line);
+
+        blocks.add(block);
         currentBlockProperties = new ArrayList<>();
         return null;
     }
@@ -134,7 +139,9 @@ public class Processor implements Expression.Visitor<Object>, Statement.Visitor<
         else if (value instanceof String) type = PropertyValue.Type.STRING;
         else type = PropertyValue.Type.NUMBER;
 
-        currentBlockProperties.add(new Property(property.name.lexeme, type, value));
+        Property domainProperty = new Property(property.name.lexeme, type, value);
+        domainProperty.debugInfo = new ReaderDebugInfo(property.name.line);
+        currentBlockProperties.add(domainProperty);
         return null;
     }
 

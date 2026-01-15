@@ -76,7 +76,7 @@ public class Box extends Mesh
             tMin = tzMin;
         if (tzMax < tMax)
             tMax = tzMax;
-        
+
         if (tMax < 0)
             return new RayInfo();
 
@@ -137,7 +137,7 @@ public class Box extends Mesh
                     max = property.getValue(PropertyValue.Type.VECTOR3);
                     break;
                 default:
-                    throw new InvalidPropertyNameException(this, property.getName());
+                    throw new InvalidPropertyNameException(this, property);
             }
         }
     }
