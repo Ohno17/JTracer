@@ -9,8 +9,10 @@ import tracer.mesh.Texture;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.reader.property.InvalidPropertyException;
+import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyConsumer;
+import tracer.reader.property.PropertyValue;
 import tracer.vector.Color;
 import tracer.vector.Vector3;
 /**
@@ -25,7 +27,7 @@ public class Scene implements PropertyConsumer
 
     private Camera camera;
     private ArrayList<Mesh> meshes;
-    private Texture skyTexture;
+    private Texture backgroundTexture;
 
     public Scene(int bounces)
     {
@@ -55,7 +57,7 @@ public class Scene implements PropertyConsumer
 
     public void setBackgroundTexture(Texture texture)
     {
-        this.skyTexture = texture;
+        this.backgroundTexture = texture;
     }
 
     private RayInfo intersect(Ray ray)
@@ -77,7 +79,7 @@ public class Scene implements PropertyConsumer
 
     private Color getBackgroundColor(Ray ray) 
     {
-        if (skyTexture == null) {
+        if (backgroundTexture == null) {
             double factor = (-ray.direction.y + 1) / 2d;
             return new Color(180, 180, 255).lerp(new Color(0, 0, 0), factor);
         }
@@ -90,7 +92,7 @@ public class Scene implements PropertyConsumer
         double u = (theta + Math.PI) / (2.0 * Math.PI);
         double v = (phi + (Math.PI / 2.0)) / Math.PI;
 
-        return skyTexture.sample(u, 1.0 - v);
+        return backgroundTexture.sample(u, 1.0 - v);
     }
 
     public Color getColor(double x, double y)
@@ -133,7 +135,23 @@ public class Scene implements PropertyConsumer
     @Override
     public void apply(List<Property> properties) throws InvalidPropertyException
     {
-        // TODO: e
+        for (Property property : properties)
+        {
+            switch (property.getName())
+            {
+                case "cameraPosition":
+                    camera.setPosition(property.getValue(PropertyValue.Type.VECTOR3));
+                    break;
+                case "cameraLookAtPosition":
+                    camera.pointTowards(property.getValue(PropertyValue.Type.VECTOR3));
+                    break;
+                case "texture":
+                    backgroundTexture = new Texture((String) property.getValue(PropertyValue.Type.STRING));
+                    break;
+                default:
+                    throw new InvalidPropertyNameException(this, property.getName());
+            }
+        }
     }
 
 }

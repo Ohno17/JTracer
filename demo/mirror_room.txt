@@ -16,47 +16,47 @@ Material ball {
 Sphere {
     center =   [0, -0.5, 4];
     radius =    1;
-    material =  ball;
+    material =  "ball";
 }
 
 # Floor
 Plane {
     center = [0, -1.5, 10];
     normal = [0, 1, 0];
-    material = mirror;
+    material = "mirror";
 }
 
 # Ceiling
 Plane {
     center = [0, 4, 10];
     normal = [0, -1, 0];
-    material = mirror;
+    material = "mirror";
 }
 
 # Left wall
 Plane {
     center = [-2.5, 0, 10];
     normal = [1, 0, 0];
-    material = mirror;
+    material = "mirror";
 }
 
 # Right wall
 Plane {
     center = [2.5, 0, 10];
     normal = [-1, 0, 0];
-    material = mirror;
+    material = "mirror";
 }
 
 # Back wall
 Plane {
     center = [0, 0, 6];
     normal = [0, 0, -1];
-    material = mirror;
+    material = "mirror";
 }
 
 # fromt wll
 Plane {
     center = [0, 0, -1];
     normal = [0, 0, 1];
-    material = mirror;
+    material = "mirror";
 }

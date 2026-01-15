@@ -62,6 +62,7 @@ public class Tokenizer
             }
             case ' ', '\r', '\t' -> {}
             case '\n' -> line++;
+            case '\"' -> string();
             default ->
             {
                 if (Character.isDigit(c)) number();
@@ -69,6 +70,25 @@ public class Tokenizer
                 else DSL.error(line, "Unexpected character.");
             }
         }
+    }
+
+    private void string() {
+        while (peek() != '\"' && !atEnd())
+        {
+            if (peek() == '\n') line++;
+            advance();
+        }
+
+        if (atEnd())
+        {
+            DSL.error(line, "Unterminated string.");
+            return;
+        }
+
+        advance();
+
+        String value = source.substring(start + 1, current - 1);
+        addToken(Type.STRING, value);
     }
 
     private void identifier()

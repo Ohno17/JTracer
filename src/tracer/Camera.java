@@ -58,7 +58,6 @@ public class Camera
     public void pointTowards(Vector3 point)
     {
         this.forward = point.subtract(position).normalize();
-        System.out.println(getRotationMatrix());
     }
 
     public Ray getRay(double x, double y)

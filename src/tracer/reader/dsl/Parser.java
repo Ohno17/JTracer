@@ -135,9 +135,9 @@ public class Parser
             return new Expression.Literal(previous().literal);
         }
 
-        if (match(IDENTIFIER))
+        if (match(STRING))
         {
-            return new Expression.Literal(previous().lexeme);
+            return new Expression.Literal(previous().literal);
         }
 
         if (match(PAREN_OPEN))
@@ -162,7 +162,7 @@ public class Parser
             return new Expression.List(values, listToken);
         }
 
-        throw error(peek(), "Expect expression.");
+        throw error(peek(), "Expect expression, not \'" + peek().type.toString().toLowerCase() + "\'");
     }
 
     private boolean match(Type... types)
