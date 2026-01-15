@@ -15,9 +15,9 @@ public class Color extends BaseVector3<Color>
     public static final Color CYAN = new Color(0, 1, 1);
     public static final Color MAGENTA = new Color(1, 0, 1);
 
-    public Color(int r, int g, int b)
+    public Color(double s)
     {
-        super(r / 255d, g / 255d, b / 255d);
+        super(s, s, s);
     }
 
     public Color(double r, double g, double b)

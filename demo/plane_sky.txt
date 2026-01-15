@@ -1,12 +1,18 @@
 #DEMO Scene
 # THree balls on a plane and the sky
 
+Material sky {texture="texture/sky.png";}
 Scene {
-    texture = "texture/sky.png";
+    bounces = 100;
+    cameraPosition = [0, 0, -1];
+    material = "sky";
+    cameraLookAtPosition = [0, 0, 0];
 }
 
 Material planeMat {
-    color = [0.8, 0.6 ,0.3];roughness = 0.89;
+    color = [0.8, 0.6 ,0.3];
+    roughness = 0.89;
+    texture = "texture/checker.png";
 }
 
 Material lightBall {
@@ -18,10 +24,10 @@ Material lightBall {
 Material ball1
 {
     color = [1, 1, 0];
-    roughness = 0.12;
+    roughness = 0.07;
 }
 
-Material ball2 {color = [0.1, 0.3 ,0.8];roughness = 0.9;}
+Material ball2 {color = [1, 1 ,1]; texture="texture/wood.png"; roughness = 0.9;}
 
 # makes a sphere in the scene
 Sphere {

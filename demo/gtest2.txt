@@ -1,10 +1,8 @@
 # THIS IS AN AI-GENERATED scene file, To see how it would react when trying to 'reason' in 3D:
 # The "Crystal Gallery" - Optimized for Low Emission
-
+Material sky {texture="texture/sky.png";}
 Scene {
-    texture = "texture/sky.png";
-    # cameraLookAtPosition = [2, 0, 4];
-    # cameraPosition = [0 ,0 ,0];
+    material = "sky";
 }
 
 # --- Materials (High Albedo for Maximum Light Bounce) ---

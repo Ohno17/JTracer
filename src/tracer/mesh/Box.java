@@ -15,10 +15,15 @@ import tracer.vector.Vector3;
 public class Box extends Mesh
 {
 
-    private static final double ELIPSON = Math.ulp(1d);
+    private static final double ELIPSON = 1e-8;
 
     private Vector3 min;
     private Vector3 max;
+
+    public Box()
+    {
+
+    }
 
     public Box(Vector3 min, Vector3 max)
     {
@@ -71,8 +76,7 @@ public class Box extends Mesh
             tMin = tzMin;
         if (tzMax < tMax)
             tMax = tzMax;
-
-        // Ignore intersections behind the ray origin
+        
         if (tMax < 0)
             return new RayInfo();
 

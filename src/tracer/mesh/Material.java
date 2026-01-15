@@ -16,100 +16,28 @@ import tracer.reader.property.PropertyValue;
 public class Material implements PropertyConsumer
 {
     
-    private Color color;
-    private Texture texture;
+    public Color color;
+    public Texture texture;
 
-    private double roughness;
+    public double roughness;
 
-    private Color emissionColor;
-    private double emissionStrength;
+    public Color emissionColor;
+    public double emissionStrength;
 
-    public Material(Color color)
+    public Material()
     {
-        this.color = color;
-        this.texture = null;
+        this.color = new Color(1);
+        this.texture = new Texture();
         this.roughness = 0.5;
-        this.emissionColor = new Color(0, 0, 0);
+        this.emissionColor = new Color(0);
         this.emissionStrength = 0;
     }
 
-    private Material(Builder builder)
+    public Color sample(double u, double v)
     {
-        this.color = builder.color;
-        this.texture = builder.texture;
-        this.roughness = builder.roughness;
-        this.emissionColor = builder.emissionColor;
-        this.emissionStrength = builder.emissionStrength;
-    }
-
-    public Color getColor()
-    {
+        if (texture.exists())
+            return texture.sample(u, v).multiply(color);
         return color;
-    }
-
-    public Texture getTexture()
-    {
-        return texture;
-    }
-
-    public double getRoughness()
-    {
-        return roughness;
-    }
-
-    public Color getEmissionColor()
-    {
-        return emissionColor;
-    }
-
-    public double getEmissionStrength()
-    {
-        return emissionStrength;
-    }
-
-    /**
-     * Allows creation of a material with optional aspects
-     */
-    public static class Builder
-    {
-
-        public Color color;
-        public Texture texture;
-
-        public double roughness = 0.5;
-
-        public Color emissionColor = new Color(0, 0, 0);
-        public double emissionStrength = 0;
-
-        public Builder(Color color)
-        {
-            this.color = color;
-        }
-
-        public Builder setTexture(Texture texture)
-        {
-            this.texture = texture;
-            return this;
-        }
-
-        public Builder setRoughness(double roughness)
-        {
-            this.roughness = roughness;
-            return this;
-        }
-
-        public Builder setEmission(Color emissionColor, double emissionStrength)
-        {
-            this.emissionColor = emissionColor;
-            this.emissionStrength = emissionStrength;
-            return this;
-        }
-
-        public Material build()
-        {
-            return new Material(this);
-        }
-
     }
 
     @Override
@@ -123,7 +51,10 @@ public class Material implements PropertyConsumer
                     color = ((Vector3) property.getValue(PropertyValue.Type.VECTOR3)).toColor();
                     break;
                 case "texture":
-                    texture = new Texture((String) property.getValue(PropertyValue.Type.STRING));
+                    texture.setImagePath(property.getValue(PropertyValue.Type.STRING));
+                    break;
+                case "textureScale":
+                    texture.setScale(property.getValue(PropertyValue.Type.NUMBER));
                     break;
                 case "roughness":
                     roughness = property.getValue(PropertyValue.Type.NUMBER);

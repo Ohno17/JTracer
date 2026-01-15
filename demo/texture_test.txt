@@ -1,6 +1,11 @@
 #DEMO Scene
 # A reflective ball in a small room
 
+Scene {
+    cameraPosition = [0, 1, 0];
+    cameraLookAtPosition = [0, -0.5, 4];
+}
+
 Material white {color = [0.8, 0.8 ,0.8];roughness = 0.7;}
 Material red {color = [0.8, 0.1 ,0.1];roughness = 0.7;}
 Material green {color = [0.1, 0.8 ,0.2];roughness = 0.7;}
@@ -16,7 +21,7 @@ Material sphereTExtured
 {
     color = [1, 1, 1];
     roughness = 1;
-    texture = "texture/sky.png";
+    texture = "texture/sunset.png";
 }
 
 # makes a sphere in the scene

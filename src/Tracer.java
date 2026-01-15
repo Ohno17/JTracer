@@ -19,7 +19,6 @@ import tracer.vector.Color;
 import tracer.reader.SceneReader;
 /**
  * Holds a ray tracer to display in a swing context.
- * @author ajaysri5715
  */
 public class Tracer extends JPanel
 {
@@ -28,7 +27,6 @@ public class Tracer extends JPanel
     private Scene scene;
 
     private int raysPerPixel = 64;
-    private int bounces = 20;
     private int tileSize = 32;
 
     public Tracer(Dimension size, String path)
@@ -36,7 +34,7 @@ public class Tracer extends JPanel
         setPreferredSize(size);
 
         image = new BufferedImage((int) size.getWidth(), (int) size.getHeight(), BufferedImage.TYPE_INT_RGB);
-        scene = new Scene(bounces);
+        scene = new Scene();
         
         try
         {
@@ -70,20 +68,27 @@ public class Tracer extends JPanel
             final int endY = Math.min(startY + tileSize, height);
 
             executor.submit(() -> {
-                ThreadLocalRandom rand = ThreadLocalRandom.current();
-                for (int y = startY; y < endY; y++) {
-                    for (int x = startX; x < endX; x++) {
-                        Color pixelColor = new Color(0, 0, 0);
-                        for (int r = 0; r < raysPerPixel; r++) {
-                            double pX = (x + 0.4 * (rand.nextDouble() - 0.5)) / width;
-                            double pY = (y + 0.4 * (rand.nextDouble() - 0.5)) / height;
-                            pixelColor = pixelColor.add(scene.getColor(pX, pY));
+                try 
+                {
+                    ThreadLocalRandom rand = ThreadLocalRandom.current();
+                    for (int y = startY; y < endY; y++) {
+                        for (int x = startX; x < endX; x++) {
+                            Color pixelColor = new Color(0, 0, 0);
+                            for (int r = 0; r < raysPerPixel; r++) {
+                                double pX = (x + 0.4 * (rand.nextDouble() - 0.5)) / width;
+                                double pY = (y + 0.4 * (rand.nextDouble() - 0.5)) / height;
+                                pixelColor = pixelColor.add(scene.getColor(pX, pY));
+                            }
+                            image.setRGB(x, y, pixelColor.divide(raysPerPixel).toBytes());
                         }
-                        image.setRGB(x, y, pixelColor.divide(raysPerPixel).toBytes());
                     }
+                    // Repaint with 1px padding to prevent seams
+                    repaint(startX - 1, startY - 1, (endX - startX) + 2, (endY - startY) + 2);
                 }
-                // Repaint with 1px padding to prevent seams
-                repaint(startX - 1, startY - 1, (endX - startX) + 2, (endY - startY) + 2);
+                catch (Exception e) 
+                {
+                    e.printStackTrace();
+                }
             });
         }
         executor.shutdown();
@@ -99,7 +104,7 @@ public class Tracer extends JPanel
 
     public void reloadScene(String path)
     {
-        Scene newScene = new Scene(bounces);
+        Scene newScene = new Scene();
         boolean sceneFileGood = false;
         try
         {

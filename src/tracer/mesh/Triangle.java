@@ -15,11 +15,16 @@ import tracer.vector.Vector3;
 public class Triangle extends Mesh
 {
 
-    private static final double ELIPSON = Math.ulp(1d);
+    private static final double ELIPSON = 1e-8;
 
     private Vector3 a;
     private Vector3 b;
     private Vector3 c;
+
+    public Triangle()
+    {
+
+    }
 
     public Triangle(Vector3 a, Vector3 b, Vector3 c)
     {
@@ -56,7 +61,7 @@ public class Triangle extends Mesh
         hitInfo.distance = dst;
         hitInfo.u = u;
         hitInfo.v = v;
-        
+
         return hitInfo;
     }
 

@@ -5,7 +5,6 @@ import java.util.List;
 
 import tracer.mesh.Material;
 import tracer.mesh.Mesh;
-import tracer.mesh.Texture;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.reader.property.InvalidPropertyException;
@@ -23,26 +22,26 @@ public class Scene implements PropertyConsumer
 
     public static final Vector3 UP = new Vector3(0, 1, 0);
 
-    private final int bounces;
+    private int bounces;
 
     private Camera camera;
     private ArrayList<Mesh> meshes;
-    private Texture backgroundTexture;
+    private Material backgroundMaterial;
 
-    public Scene(int bounces)
+    public Scene()
     {
-        this.bounces = bounces;
+        this.bounces = 20;
 
         this.camera = new Camera(80, 1d / 1d);
         this.meshes = new ArrayList<Mesh>();
     }
 
-    public Scene(int bounces, double fieldOfView, double aspectRatio)
+    public Scene(int bounces, double fieldOfView, double aspectRatio, Material backgroundMaterial)
     {
         this.bounces = bounces;
-
         this.camera = new Camera(fieldOfView, aspectRatio);
         this.meshes = new ArrayList<Mesh>();
+        this.backgroundMaterial = backgroundMaterial;
     }
 
     public Camera getCamera()
@@ -55,9 +54,9 @@ public class Scene implements PropertyConsumer
         meshes.add(mesh);
     }
 
-    public void setBackgroundTexture(Texture texture)
+    public void setMaterial(Material backgroundMaterial)
     {
-        this.backgroundTexture = texture;
+        this.backgroundMaterial = backgroundMaterial;
     }
 
     private RayInfo intersect(Ray ray)
@@ -79,9 +78,10 @@ public class Scene implements PropertyConsumer
 
     private Color getBackgroundColor(Ray ray) 
     {
-        if (backgroundTexture == null) {
+        if (backgroundMaterial == null)
+        {
             double factor = (-ray.direction.y + 1) / 2d;
-            return new Color(180, 180, 255).lerp(new Color(0, 0, 0), factor);
+            return new Color(0.6, 0.6, 1).lerp(new Color(0), factor);
         }
 
         Vector3 dir = ray.direction.normalize();
@@ -92,7 +92,7 @@ public class Scene implements PropertyConsumer
         double u = (theta + Math.PI) / (2.0 * Math.PI);
         double v = (phi + (Math.PI / 2.0)) / Math.PI;
 
-        return backgroundTexture.sample(u, 1.0 - v);
+        return backgroundMaterial.sample(u, 1.0 - v);
     }
 
     public Color getColor(double x, double y)
@@ -103,7 +103,7 @@ public class Scene implements PropertyConsumer
     public Color getColor(Ray ray)
     {
         Color rayLightColor = new Color(0, 0, 0);
-        Color rayColor = new Color(255, 255, 255);
+        Color rayColor = new Color(1, 1, 1);
 
         for (int b = 0; b < bounces; b++)
         {
@@ -111,16 +111,11 @@ public class Scene implements PropertyConsumer
             if (info.hit)
             {
                 ray.origin = info.point;
-                ray.reflect(info.normal, info.material.getRoughness());
+                ray.reflect(info.normal, info.material.roughness);
                 
                 Material material = info.material;
-                Color surfaceColor = material.getColor(); 
-                if (material.getTexture() != null) {
-                    Color texColor = material.getTexture().sample(info.u, info.v);
-                    surfaceColor = surfaceColor.multiply(texColor);
-                }
-
-                Color emission = material.getEmissionColor().multiply(material.getEmissionStrength());
+                Color surfaceColor = material.sample(info.u, info.v); 
+                Color emission = material.emissionColor.multiply(material.emissionStrength);
                 rayLightColor = rayLightColor.add(emission.multiply(rayColor));
                 rayColor = rayColor.multiply(surfaceColor);
             } else {
@@ -145,8 +140,16 @@ public class Scene implements PropertyConsumer
                 case "cameraLookAtPosition":
                     camera.pointTowards(property.getValue(PropertyValue.Type.VECTOR3));
                     break;
-                case "texture":
-                    backgroundTexture = new Texture((String) property.getValue(PropertyValue.Type.STRING));
+                case "bounces":
+                    double dblBounces = property.getValue(PropertyValue.Type.NUMBER);
+                    try
+                    {
+                        bounces = (int) dblBounces;
+                    }
+                    catch (ClassCastException e)
+                    {
+                        System.err.println("The amount of bounces must be an integer. Received: " + dblBounces);
+                    }
                     break;
                 default:
                     throw new InvalidPropertyNameException(this, property.getName());

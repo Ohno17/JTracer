@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JDialog;
 
 /**
  * Simulate realistic light reflection and refraction in digital environments.
@@ -36,7 +37,7 @@ public class Main
         
         mainFrame.setVisible(true);
 
-        JFrame controlFrame = new JFrame("JTracer - Control Panel");
+        JDialog controlFrame = new JDialog(mainFrame, "JTracer - Control Panel");
         controlFrame.setSize(CONTROL_WINDOW_SIZE);
 
         JButton renderButton = new JButton("Render");

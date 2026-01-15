@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -71,41 +70,21 @@ public class SceneReader
         Mesh mesh;
         switch (block.type)
         {
-            case "Sphere" -> mesh = new Sphere(null, 0);
-            case "Plane" -> mesh = new Plane(null, null);
-            case "Box" -> mesh = new Box(null, null);
+            case "Sphere" -> mesh = new Sphere();
+            case "Plane" -> mesh = new Plane();
+            case "Box" -> mesh = new Box();
             default -> {
                 System.err.println("Unrecongnized type \'" + block.type + "\'");
                 return false;
             }
         }
 
-        // Special properties
-        String materialKey = null;
-        ArrayList<Property> properties = new ArrayList<Property>(block.properties);
-        for (int i = 0; i < properties.size(); i++)
-        {
-            Property property = properties.get(i);
-            if (property.getName().equals("material"))
-            {
-                try
-                {
-                    materialKey = property.getValue(PropertyValue.Type.STRING);
-                }
-                catch (InvalidPropertyValueException exception)
-                {
-                    System.err.println(exception.getMessage());
-                    return false;
-                }
-
-                properties.remove(property);
-                i--;
-            }
-        }
+        Material material = processMaterialProperty(block.properties);
+        if (material == null) return false;
 
         try
         {
-            mesh.apply(properties);
+            mesh.apply(block.properties);
         }
         catch (InvalidPropertyException exception)
         {
@@ -113,16 +92,7 @@ public class SceneReader
             return false;
         }
 
-        if (materialKey != null)
-        {
-            Material material = materialMap.get(materialKey);
-            if (material == null)
-            {
-                System.err.println("No material named \'" + materialKey + "\'");
-                return false;
-            }
-            mesh.setMaterial(material);
-        }
+        mesh.setMaterial(material);
 
         scene.add(mesh);
         return true;
@@ -137,7 +107,7 @@ public class SceneReader
         {
             if (!block.type.equals("Material")) continue;
 
-            Material material = new Material(null);
+            Material material = new Material();
             material.apply(block.properties);
             materialMap.put(block.name, material);
         }
@@ -150,6 +120,11 @@ public class SceneReader
         for (DSLBlock block : blocks)
         {
             if (!block.type.equals("Scene")) continue;
+
+            Material material = processMaterialProperty(block.properties);
+            if (material == null) return false;
+            scene.setMaterial(material);
+
             try
             {
                 scene.apply(block.properties);
@@ -161,6 +136,41 @@ public class SceneReader
             }
         }
         return true;
+    }
+
+    // changes the given list by removing the material property if it exists
+    private static Material processMaterialProperty(List<Property> originalBlockList)
+    {
+        Material material = null;
+        for (int i = 0; i < originalBlockList.size(); i++)
+        {
+            Property property = originalBlockList.get(i);
+
+            if (!property.getName().equals("material")) continue;
+
+            String materialKey;
+            try
+            {
+                materialKey = property.getValue(PropertyValue.Type.STRING);
+            }
+            catch (InvalidPropertyValueException exception)
+            {
+                System.err.println(exception.getMessage());
+                return null;
+            }
+
+            material = materialMap.get(materialKey);
+            if (material == null)
+            {
+                System.err.println("No material named \'" + materialKey + "\'");
+                return null;
+            }
+
+            originalBlockList.remove(property);
+            i--;
+            break;
+        }
+        return material;
     }
     
 }
