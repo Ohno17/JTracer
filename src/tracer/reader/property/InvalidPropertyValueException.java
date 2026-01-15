@@ -6,7 +6,7 @@ public class InvalidPropertyValueException extends InvalidPropertyException
     {
         super(
             "Property \'" + property.getName() + "\' should be of type \'" + expected + "\' (actual: \'" + property.getValue().type + "\')",
-            property.debugInfo != null ? property.debugInfo.line : InvalidPropertyException.NO_DEBUG_INFO
+            property.debugInfo != null ? property.debugInfo.line() : InvalidPropertyException.NO_DEBUG_INFO
         );
     }
 }

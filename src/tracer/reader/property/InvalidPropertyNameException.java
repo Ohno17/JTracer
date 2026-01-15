@@ -6,7 +6,7 @@ public class InvalidPropertyNameException extends InvalidPropertyException
     {
         super(
             "Invalid property \'" + property.getName() + "\' for consumer \'" + consumer.getClass().getSimpleName() + "\'",
-            property.debugInfo != null ? property.debugInfo.line : InvalidPropertyException.NO_DEBUG_INFO
+            property.debugInfo != null ? property.debugInfo.line() : InvalidPropertyException.NO_DEBUG_INFO
         );
     }
 }

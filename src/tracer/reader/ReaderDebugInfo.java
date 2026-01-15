@@ -1,13 +1,6 @@
 package tracer.reader;
 
-public class ReaderDebugInfo
+public record ReaderDebugInfo(int line)
 {
-
-    public int line;
-
-    public ReaderDebugInfo(int line)
-    {
-        this.line = line;
-    }
     
 }

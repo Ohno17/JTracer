@@ -38,9 +38,9 @@ public class Reader
         if (block.debugInfo == null)
             System.err.println("[error] Error: " + message);
         else if (block.name == null)
-            System.err.println("[line " + block.debugInfo.line + "] Error: " + message);
+            System.err.println("[line " + block.debugInfo.line() + "] Error: " + message);
         else if (!message.contains("[line"))
-            System.err.println("[within block at line " + block.debugInfo.line + "] Error in " + block.type + " \'" + block.name + "\': " + message);
+            System.err.println("[within block at line " + block.debugInfo.line() + "] Error in " + block.type + " \'" + block.name + "\': " + message);
         else
             System.err.println(message + " (Error in " + block.type + " \'" + block.name + "\')");
         System.err.print(RESET_COLOR);
