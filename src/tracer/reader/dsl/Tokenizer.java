@@ -67,7 +67,7 @@ public class Tokenizer
             {
                 if (Character.isDigit(c)) number();
                 else if (Character.isAlphabetic(c)) identifier();
-                else DSL.error(line, "Unexpected character.");
+                else DSL.syntaxError(line, "Unexpected character.");
             }
         }
     }
@@ -81,7 +81,7 @@ public class Tokenizer
 
         if (atEnd())
         {
-            DSL.error(line, "Unterminated string.");
+            DSL.syntaxError(line, "Unterminated string.");
             return;
         }
 

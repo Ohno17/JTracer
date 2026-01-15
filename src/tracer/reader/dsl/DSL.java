@@ -2,11 +2,13 @@ package tracer.reader.dsl;
 
 import java.util.List;
 
+import tracer.reader.Reader;
+
 public class DSL
 {
 
-    public static boolean hadError = false;
-    public static boolean hadProcessingError = false;
+    public static int syntaxErrors = 0;
+    public static boolean processingError = false;
     
     private final String source;
 
@@ -17,48 +19,59 @@ public class DSL
 
     public List<DSLBlock> compile()
     {
+        syntaxErrors = 0;
+        processingError = false;
+
         Tokenizer tokenizer = new Tokenizer(source);
         List<Token> tokens = tokenizer.scanTokens();
 
         Parser parser = new Parser(tokens);
         List<Statement> statements = parser.parse();
 
-        if (hadError) return null;
+        if (syntaxErrors > 0)
+        {
+            System.err.println(Reader.ERROR_COLOR + "Failed with " + syntaxErrors + " syntax errors." + Reader.RESET_COLOR);
+            return null;
+        }
 
         Processor processor = new Processor();
         List<DSLBlock> blocks = processor.process(statements);
 
-        if (hadProcessingError) return null;
+        if (processingError)
+        {
+            System.err.println(Reader.ERROR_COLOR + "Failed while processing." + Reader.RESET_COLOR);
+            return null;
+        }
 
         return blocks;
     }
 
-    static void error(int line, String message)
+    static void syntaxError(int line, String message)
     {
-        report(line, "", message);
+        syntaxError(line, "", message);
     }
 
-    static void error(Token token, String message)
+    static void syntaxError(Token token, String message)
     {
         if (token.type == Token.Type.EOF)
         {
-            report(token.line, " at end", message);
+            syntaxError(token.line, " at end", message);
         }
         else
         {
-            report(token.line, " at '" + token.lexeme + "'", message);
+            syntaxError(token.line, " at '" + token.lexeme + "'", message);
         }
     }
 
     public static void processingError(Processor.ProcessorException exception) {
-        System.err.println("[line " + exception.token.line + "] " + exception.getMessage());
-        hadProcessingError = true;
+        System.err.println(Reader.ERROR_COLOR + "[line " + exception.token.line + "] Error: " + exception.getMessage() + Reader.RESET_COLOR);
+        processingError = true;
     }
 
-    private static void report(int line, String where, String message)
+    private static void syntaxError(int line, String where, String message)
     {
-        System.err.println("[line " + line + "] Error" + where + ": " + message);
-        hadError = true;
+        System.err.println(Reader.ERROR_COLOR + "[line " + line + "] Error" + where + ": " + message + Reader.RESET_COLOR);
+        syntaxErrors++;
     }
 
 }

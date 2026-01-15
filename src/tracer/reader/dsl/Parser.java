@@ -214,7 +214,7 @@ public class Parser
 
     private ParseException error(Token token, String message)
     {
-        DSL.error(token, message);
+        DSL.syntaxError(token, message);
         return new ParseException();
     }
 
