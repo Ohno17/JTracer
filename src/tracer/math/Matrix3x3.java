@@ -1,4 +1,4 @@
-package tracer.vector;
+package tracer.math;
 
 import java.util.Iterator;
 
@@ -73,7 +73,9 @@ public class Matrix3x3 implements Iterable<Vector3>
             @Override
             public Vector3 next()
             {
-                return getComponent(index);
+                Vector3 value = getComponent(index);
+                index++;
+                return value;
             }
 
         };

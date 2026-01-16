@@ -2,13 +2,13 @@ package tracer.mesh;
 
 import java.util.List;
 
+import tracer.math.Vector3;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.reader.property.InvalidPropertyException;
 import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
-import tracer.vector.Vector3;
 /**
  * Represents a sphere that can be intersected with a ray.
  */
@@ -50,19 +50,19 @@ public class Triangle extends Mesh
         double v = -edgeAB.dot(rayOffsetPerp) * invDet;
         double w = 1 - u - v;
 
-        // Initialize hit info
-        RayInfo hitInfo = new RayInfo();
         boolean cullBackface = false;
         boolean keep = cullBackface ? determinant >= ELIPSON : Math.abs(determinant) >= ELIPSON;
 
-        hitInfo.hit = keep && dst > 0 && u >= 0 && v >= 0 && w >= 0;
-        hitInfo.normal = triFaceVector.normalize();
-        hitInfo.point = ray.origin.add(ray.direction.multiply(dst));
-        hitInfo.distance = dst;
-        hitInfo.u = u;
-        hitInfo.v = v;
-
-        return hitInfo;
+        if (keep && dst > 0 && u >= 0 && v >= 0 && w >= 0)
+            return new RayInfo(
+                dst,
+                ray.origin.add(ray.direction.multiply(dst)),
+                triFaceVector.normalize(),
+                u,
+                v,
+                this.getMaterial()
+            );
+        return new RayInfo();
     }
 
     @Override

@@ -1,38 +1,29 @@
 package tracer.ray;
 
+import tracer.math.Vector3;
 import tracer.mesh.Material;
-import tracer.vector.Vector3;
 /**
  * Represents data collected when a ray hits a surface.
  */
-public class RayInfo
+public record RayInfo(
+    boolean hit,
+    Vector3 normal,
+    Vector3 point,
+    double distance,
+    Material material,
+    double u,
+    double v
+)
 {
-    
-    public boolean hit;
-
-    public Vector3 normal;
-    public Vector3 point;
-    public double distance;
-
-    public Material material;
-
-    public double u;
-    public double v;
 
     public RayInfo()
     {
-        this.hit = false;
-        this.distance = Double.POSITIVE_INFINITY;
+        this(false, null, null, Double.POSITIVE_INFINITY, null, 0.0, 0.0);
     }
 
-    public RayInfo(double distance, Vector3 point, Vector3 normal, double u, double v)
+    public RayInfo(double distance, Vector3 point, Vector3 normal, double u, double v, Material material)
     {
-        this.hit = true;
-        this.distance = distance;
-        this.point = point;
-        this.normal = normal;
-        this.u = u;
-        this.v = v;
+        this(true, normal, point, distance, material, u, v);
     }
 
 }

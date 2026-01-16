@@ -12,6 +12,7 @@ import tracer.mesh.Material;
 import tracer.mesh.Mesh;
 import tracer.mesh.Plane;
 import tracer.mesh.Sphere;
+import tracer.Logger;
 import tracer.Scene;
 import tracer.reader.dsl.DSL;
 import tracer.reader.dsl.DSLBlock;
@@ -24,8 +25,6 @@ import tracer.reader.property.PropertyValue;
  */
 public class Reader
 {
-    public static final String ERROR_COLOR = "\u001B[31m";
-    public static final String RESET_COLOR = "\u001B[0m";
 
     private static Scene scene;
     private static HashMap<String, Material> materialMap;
@@ -34,16 +33,14 @@ public class Reader
 
     private static void reportApplyError(DSLBlock block, String message)
     {
-        System.err.print(ERROR_COLOR);
         if (block.debugInfo == null)
-            System.err.println("[error] Error: " + message);
+            Logger.errorPrintln("[error] Error: " + message);
         else if (block.name == null)
-            System.err.println("[line " + block.debugInfo.line() + "] Error: " + message);
+            Logger.errorPrintln("[line " + block.debugInfo.line() + "] Error: " + message);
         else if (!message.contains("[line"))
-            System.err.println("[within block at line " + block.debugInfo.line() + "] Error in " + block.type + " \'" + block.name + "\': " + message);
+            Logger.errorPrintln("[within block at line " + block.debugInfo.line() + "] Error in " + block.type + " \'" + block.name + "\': " + message);
         else
-            System.err.println(message + " (Error in " + block.type + " \'" + block.name + "\')");
-        System.err.print(RESET_COLOR);
+            Logger.errorPrintln(message + " (Error in " + block.type + " \'" + block.name + "\')");
         applyErrors++;
     }
 
@@ -56,7 +53,7 @@ public class Reader
      */
     public static boolean readInto(Scene scene, Path path) throws IOException
     {
-        System.out.println();
+        Logger.outputPrintln("\n[reader] Reading \'" + path + "\'");
         applyErrors = 0;
 
         Reader.scene = scene;
@@ -74,13 +71,13 @@ public class Reader
         {
             if (!processBlock(block))
             {
-                System.err.println(ERROR_COLOR + "Failed with " + applyErrors + " errors while applying properties." + RESET_COLOR);
+                Logger.errorPrintln("Failed with " + applyErrors + " errors while applying properties.");
                 return false;
             }
         }
         
-        if (applyErrors > 0) System.err.println(ERROR_COLOR + "Success with " + applyErrors + " errors while applying properties." + RESET_COLOR);
-        else System.out.println("Scene loaded successfully.");
+        if (applyErrors > 0) Logger.errorPrintln("Success with " + applyErrors + " errors while applying properties.");
+        else Logger.outputPrintln("Scene loaded successfully.");
         return true;
     }
 

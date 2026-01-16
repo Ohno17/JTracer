@@ -1,8 +1,8 @@
 package tracer;
 
+import tracer.math.Matrix3x3;
+import tracer.math.Vector3;
 import tracer.ray.Ray;
-import tracer.vector.Matrix3x3;
-import tracer.vector.Vector3;
 /**
  * Represents a camera from which rays originate.
  */

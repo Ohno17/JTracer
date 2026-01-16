@@ -10,8 +10,8 @@ public class PropertyValue
         VECTOR3
     }
 
-    public Type type;
-    public Object value;
+    public final Type type;
+    public final Object value;
 
     public PropertyValue(Type type, Object value)
     {

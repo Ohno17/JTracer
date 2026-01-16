@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JPanel;
 
 import tracer.Scene;
-import tracer.vector.Color;
+import tracer.math.Color;
 import tracer.reader.Reader;
 /**
  * Holds a ray tracer to display in a swing context.

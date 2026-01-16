@@ -2,13 +2,13 @@ package tracer.mesh;
 
 import java.util.List;
 
+import tracer.math.Vector3;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.reader.property.InvalidPropertyException;
 import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
-import tracer.vector.Vector3;
 /**
  * Represents a sphere that can be intersected with a ray.
  */
@@ -56,7 +56,8 @@ public class Sphere extends Mesh
                 hitPoint,
                 normal,
                 u,
-                v
+                v,
+                this.getMaterial()
             );
         }
         return new RayInfo();

@@ -50,7 +50,7 @@ public class Parser
             Token name = null;
             if (check(IDENTIFIER))
             {
-                consume(IDENTIFIER, "Expect block type");
+                consume(IDENTIFIER, "Expect block name");
                 name = previous();
             }
 

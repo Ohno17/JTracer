@@ -1,4 +1,4 @@
-package tracer.vector;
+package tracer.math;
 
 /**
  * Represents a vector in 3D space.

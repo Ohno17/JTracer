@@ -2,13 +2,13 @@ package tracer.mesh;
 
 import java.util.List;
 
+import tracer.math.Vector3;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.reader.property.InvalidPropertyException;
 import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
-import tracer.vector.Vector3;
 /**
  * Represents a infinite plane that can be intersected with a ray.
 */
@@ -61,7 +61,8 @@ public class Plane extends Mesh
                     hitPoint,
                     finalNormal,
                     uAxis.dot(transformedCenter),
-                    vAxis.dot(transformedCenter)
+                    vAxis.dot(transformedCenter),
+                    this.getMaterial()
                 );
             }
         }

@@ -2,7 +2,7 @@ package tracer.ray;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import tracer.vector.Vector3;
+import tracer.math.Vector3;
 
 /**
  * Represents an origin and direction.

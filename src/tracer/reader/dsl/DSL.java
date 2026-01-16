@@ -2,7 +2,7 @@ package tracer.reader.dsl;
 
 import java.util.List;
 
-import tracer.reader.Reader;
+import tracer.Logger;
 
 public class DSL
 {
@@ -30,7 +30,7 @@ public class DSL
 
         if (syntaxErrors > 0)
         {
-            System.err.println(Reader.ERROR_COLOR + "Failed with " + syntaxErrors + " syntax errors." + Reader.RESET_COLOR);
+            Logger.errorPrintln("Failed with " + syntaxErrors + " syntax errors.");
             return null;
         }
 
@@ -39,7 +39,7 @@ public class DSL
 
         if (processingError)
         {
-            System.err.println(Reader.ERROR_COLOR + "Failed while processing." + Reader.RESET_COLOR);
+            Logger.errorPrintln("Failed while processing.");
             return null;
         }
 
@@ -64,13 +64,13 @@ public class DSL
     }
 
     public static void processingError(Processor.ProcessorException exception) {
-        System.err.println(Reader.ERROR_COLOR + "[line " + exception.token.line + "] Error: " + exception.getMessage() + Reader.RESET_COLOR);
+        Logger.errorPrintln("[line " + exception.token.line + "] Error: " + exception.getMessage());
         processingError = true;
     }
 
     private static void syntaxError(int line, String where, String message)
     {
-        System.err.println(Reader.ERROR_COLOR + "[line " + line + "] Error" + where + ": " + message + Reader.RESET_COLOR);
+        Logger.errorPrintln("[line " + line + "] Error" + where + ": " + message);
         syntaxErrors++;
     }
 

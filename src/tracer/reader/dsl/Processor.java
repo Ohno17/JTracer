@@ -3,11 +3,11 @@ package tracer.reader.dsl;
 import java.util.ArrayList;
 import java.util.List;
 
+import tracer.math.BaseVector3;
+import tracer.math.Vector3;
 import tracer.reader.ReaderDebugInfo;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
-import tracer.vector.BaseVector3;
-import tracer.vector.Vector3;
 
 public class Processor implements Expression.Visitor<Object>, Statement.Visitor<Void>
 {
@@ -27,6 +27,8 @@ public class Processor implements Expression.Visitor<Object>, Statement.Visitor<
 
     public List<DSLBlock> process(List<Statement> statements)
     {
+        currentBlockProperties = new ArrayList<>();
+
         try
         {
             for (Statement statement : statements)
@@ -67,19 +69,61 @@ public class Processor implements Expression.Visitor<Object>, Statement.Visitor<
     public Object visitBinaryExpression(Expression.Binary expression)
     {
         Object left = expression.left.accept(this);
-        Object right = expression.right.accept(this); 
-        checkNumberOperands(expression.operator, left, right);
+        Object right = expression.right.accept(this);
 
         switch (expression.operator.type)
         {
             case PLUS:
-                return (double)left + (double)right;
+                if (left instanceof Double && right instanceof Double)
+                    return (double)left + (double)right;
+
+                if (right instanceof String && left instanceof String)
+                    return (String)left + (String)right;
+
+                if (right instanceof BaseVector3 && left instanceof BaseVector3)
+                    return ((BaseVector3<?>)left).add((BaseVector3<?>)right);
+                if (right instanceof BaseVector3 && left instanceof Double)
+                    return ((BaseVector3<?>)right).add((Double)left);
+                if (right instanceof BaseVector3 && left instanceof BaseVector3)
+                    return ((BaseVector3<?>)left).add((Double)right);
+
+                throw new ProcessorException(expression.operator, "Operands must be two numbers/vectors, or two strings.");
             case MINUS:
-                return (double)left - (double)right;
+                if (left instanceof Double && right instanceof Double)
+                    return (double)left - (double)right;
+
+                if (right instanceof BaseVector3 && left instanceof BaseVector3)
+                    return ((BaseVector3<?>)left).subtract((BaseVector3<?>)right);
+                if (right instanceof BaseVector3 && left instanceof Double)
+                    return ((BaseVector3<?>)right).subtract((Double)left);
+                if (right instanceof Double && left instanceof BaseVector3)
+                    throw new ProcessorException(expression.operator, "A vector cannot be subtracted from a number.");
+
+                throw new ProcessorException(expression.operator, "Operands must be two numbers/vectors.");
             case SLASH:
-                return (double)left / (double)right;
+                if (left instanceof Double && right instanceof Double)
+                    return (double)left / (double)right;
+
+                if (right instanceof BaseVector3 && left instanceof BaseVector3)
+                    return ((BaseVector3<?>)left).divide((BaseVector3<?>)right);
+                if (right instanceof BaseVector3 && left instanceof Double)
+                    return ((BaseVector3<?>)right).divide((Double)left);
+                if (right instanceof Double && left instanceof BaseVector3)
+                    throw new ProcessorException(expression.operator, "A number cannot be divided by a vector.");
+
+                throw new ProcessorException(expression.operator, "Operands must be two numbers/vectors.");
             case STAR:
-                return (double)left * (double)right;
+                if (left instanceof Double && right instanceof Double)
+                    return (double)left * (double)right;
+
+                if (right instanceof BaseVector3 && left instanceof BaseVector3)
+                    return ((BaseVector3<?>)left).multiply((BaseVector3<?>)right);
+                if (right instanceof BaseVector3 && left instanceof Double)
+                    return ((BaseVector3<?>)right).multiply((Double)left);
+                if (right instanceof Double && left instanceof BaseVector3)
+                    return ((BaseVector3<?>)left).multiply((Double)right);
+
+                throw new ProcessorException(expression.operator, "Operands must be two numbers/vectors.");
             default:
                 return null;
         }
@@ -150,13 +194,6 @@ public class Processor implements Expression.Visitor<Object>, Statement.Visitor<
         if (operand instanceof Double)
             return;
         throw new ProcessorException(operator, "Operand must be a number.");
-    }
-
-    private void checkNumberOperands(Token operator, Object left, Object right)
-    {
-        if (left instanceof Double && right instanceof Double)
-            return;
-        throw new ProcessorException(operator, "Operands must be numbers.");
     }
     
 }

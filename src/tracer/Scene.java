@@ -3,6 +3,8 @@ package tracer;
 import java.util.ArrayList;
 import java.util.List;
 
+import tracer.math.Color;
+import tracer.math.Vector3;
 import tracer.mesh.Material;
 import tracer.mesh.Mesh;
 import tracer.ray.Ray;
@@ -12,8 +14,6 @@ import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyConsumer;
 import tracer.reader.property.PropertyValue;
-import tracer.vector.Color;
-import tracer.vector.Vector3;
 /**
  * Represents a scene that can be filled with meshes.
  */
@@ -66,10 +66,9 @@ public class Scene implements PropertyConsumer
         for (Mesh mesh : meshes)
         {
             RayInfo info = mesh.intersect(ray);
-            if (info.hit && info.distance < closestInfo.distance)
+            if (info.hit() && info.distance() < closestInfo.distance())
             {
                 closestInfo = info;
-                closestInfo.material = mesh.getMaterial();
             }
         }
 
@@ -108,14 +107,14 @@ public class Scene implements PropertyConsumer
         for (int b = 0; b < bounces; b++)
         {
             RayInfo info = intersect(ray);
-            if (info.hit)
+            if (info.hit())
             {
-                ray.origin = info.point;
-                ray.reflect(info.normal, info.material.roughness);
+                ray.origin = info.point();
+                ray.reflect(info.normal(), info.material().roughness);
                 
-                Material material = info.material;
-                Color surfaceColor = material.sampleColor(info.u, info.v);
-                Color emission = material.sampleEmissionColor(info.u, info.v).multiply(material.emissionStrength);
+                Material material = info.material();
+                Color surfaceColor = material.sampleColor(info.u(), info.v());
+                Color emission = material.sampleEmissionColor(info.u(), info.v()).multiply(material.emissionStrength);
                 rayLightColor = rayLightColor.add(emission.multiply(rayColor));
                 rayColor = rayColor.multiply(surfaceColor);
             }

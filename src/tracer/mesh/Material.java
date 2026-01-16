@@ -2,8 +2,8 @@ package tracer.mesh;
 
 import java.util.List;
 
-import tracer.vector.Color;
-import tracer.vector.Vector3;
+import tracer.math.Color;
+import tracer.math.Vector3;
 import tracer.reader.property.InvalidPropertyException;
 import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;

@@ -2,13 +2,13 @@ package tracer.mesh;
 
 import java.util.List;
 
+import tracer.math.Vector3;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.reader.property.InvalidPropertyException;
 import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
-import tracer.vector.Vector3;
 /**
  * Represents a axis-aligned box that can be intersected with a ray.
  */
@@ -120,7 +120,7 @@ public class Box extends Mesh
         u = Math.max(0, Math.min(1, u));
         v = Math.max(0, Math.min(1, v));
 
-        return new RayInfo(tHit, hitPoint, normal, u, v);
+        return new RayInfo(tHit, hitPoint, normal, u, v, this.getMaterial());
     }
 
     @Override

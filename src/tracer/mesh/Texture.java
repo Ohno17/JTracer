@@ -2,7 +2,8 @@ package tracer.mesh;
 
 import javax.imageio.ImageIO;
 
-import tracer.vector.Color;
+import tracer.Logger;
+import tracer.math.Color;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,7 +12,7 @@ import java.io.IOException;
 public class Texture
 {
 
-    private BufferedImage image;
+    private int[] data;
     private int width;
     private int height;
 
@@ -19,7 +20,7 @@ public class Texture
 
     public Texture()
     {
-        this.image = null;
+        this.data = null;
     }
 
     public Texture(String path)
@@ -29,21 +30,25 @@ public class Texture
 
     public boolean exists()
     {
-        return image != null;
+        return data != null;
     }
 
     public void setImagePath(String path)
     {
         try
         {
-            this.image = ImageIO.read(new File(path));
+            Logger.outputPrintln("textures", "Loading \'" + path + "\'");
+            BufferedImage image = ImageIO.read(new File(path));
             this.width = image.getWidth();
             this.height = image.getHeight();
+
+            data = new int[width * height];
+            image.getRGB(0, 0, width, height, data, 0, width);
         }
         catch (IOException e)
         {
-            System.err.println("Could not load texture: " + e.getMessage());
-            image = null;
+            Logger.errorPrintln("textures", "Could not load \'" + path + "\': " + e.getMessage());
+            data = null;
         }
     }
 
@@ -60,7 +65,7 @@ public class Texture
         int x = (int) (uWrapped * (width - 1));
         int y = (int) (vWrapped * (height - 1));
 
-        int rgb = image.getRGB(x, y);
+        int rgb = data[(y * width) + x];
 
         int r = (rgb >> 16) & 0xFF;
         int g = (rgb >> 8) & 0xFF;
