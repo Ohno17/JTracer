@@ -44,17 +44,16 @@ public class Triangle extends Mesh
         double determinant = -ray.direction.dot(triFaceVector);
         double invDet = 1 / determinant;
 
-        // Calculate hit-dst and barycentric coordinates
         double dst = vertRayOffset.dot(triFaceVector) * invDet;
         double u = edgeAC.dot(rayOffsetPerp) * invDet;
         double v = -edgeAB.dot(rayOffsetPerp) * invDet;
         double w = 1 - u - v;
 
-        boolean cullBackface = false;
-        boolean keep = cullBackface ? determinant >= ELIPSON : Math.abs(determinant) >= ELIPSON;
+        boolean degenerate = Math.abs(determinant) >= ELIPSON;
 
-        if (keep && dst > 0 && u >= 0 && v >= 0 && w >= 0)
+        if (degenerate && dst > 0 && u >= 0 && v >= 0 && w >= 0)
             return new RayInfo(
+                determinant < 0,
                 dst,
                 ray.origin.add(ray.direction.multiply(dst)),
                 triFaceVector.normalize(),

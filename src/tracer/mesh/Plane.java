@@ -57,6 +57,7 @@ public class Plane extends Mesh
                 Vector3 transformedCenter = hitPoint.subtract(center);
 
                 return new RayInfo(
+                    false,
                     t,
                     hitPoint,
                     finalNormal,

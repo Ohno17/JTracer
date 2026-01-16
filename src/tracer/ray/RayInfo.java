@@ -22,9 +22,9 @@ public record RayInfo(
         this(false, false, null, null, Double.POSITIVE_INFINITY, null, 0.0, 0.0);
     }
 
-    public RayInfo(double distance, Vector3 point, Vector3 normal, double u, double v, Material material)
+    public RayInfo(boolean backface, double distance, Vector3 point, Vector3 normal, double u, double v, Material material)
     {
-        this(true, false, normal, point, distance, material, u, v);
+        this(true, backface, normal, point, distance, material, u, v);
     }
 
 }

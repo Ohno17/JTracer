@@ -52,6 +52,7 @@ public class Sphere extends Mesh
             double v = 0.5 - (Math.asin(normal.y) / Math.PI);
 
             if (t >= 0) return new RayInfo(
+                ray.direction.dot(normal) > 0,
                 t,
                 hitPoint,
                 normal,
