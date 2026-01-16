@@ -13,7 +13,7 @@ public class Logger
 
     public static void errorPrintln(String system, String message)
     {
-        System.err.println(ERROR_COLOR + "[" + system + "]" + message + RESET_COLOR);
+        System.err.println(ERROR_COLOR + "[" + system + "] " + message + RESET_COLOR);
     }
 
     public static void outputPrintln(String message)
@@ -23,7 +23,7 @@ public class Logger
 
     public static void outputPrintln(String system, String message)
     {
-        System.out.println("[" + system + "]" + message);
+        System.out.println("[" + system + "] " + message);
     }
     
 }

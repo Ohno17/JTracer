@@ -12,6 +12,7 @@ import tracer.mesh.Material;
 import tracer.mesh.Mesh;
 import tracer.mesh.Plane;
 import tracer.mesh.Sphere;
+import tracer.mesh.Triangle;
 import tracer.Logger;
 import tracer.Scene;
 import tracer.reader.dsl.DSL;
@@ -38,7 +39,7 @@ public class Reader
         else if (block.name == null)
             Logger.errorPrintln("[line " + block.debugInfo.line() + "] Error: " + message);
         else if (!message.contains("[line"))
-            Logger.errorPrintln("[within block at line " + block.debugInfo.line() + "] Error in " + block.type + " \'" + block.name + "\': " + message);
+            Logger.errorPrintln("[block at line " + block.debugInfo.line() + "] Error in " + block.type + " \'" + block.name + "\': " + message);
         else
             Logger.errorPrintln(message + " (Error in " + block.type + " \'" + block.name + "\')");
         applyErrors++;
@@ -53,7 +54,8 @@ public class Reader
      */
     public static boolean readInto(Scene scene, Path path) throws IOException
     {
-        Logger.outputPrintln("\n[reader] Reading \'" + path + "\'");
+        Logger.outputPrintln("");
+        Logger.outputPrintln("reader", "Reading \'" + path + "\'");
         applyErrors = 0;
 
         Reader.scene = scene;
@@ -71,13 +73,13 @@ public class Reader
         {
             if (!processBlock(block))
             {
-                Logger.errorPrintln("Failed with " + applyErrors + " errors while applying properties.");
+                Logger.errorPrintln("reader", "Failed with " + applyErrors + " errors while applying properties.");
                 return false;
             }
         }
         
-        if (applyErrors > 0) Logger.errorPrintln("Success with " + applyErrors + " errors while applying properties.");
-        else Logger.outputPrintln("Scene loaded successfully.");
+        if (applyErrors > 0) Logger.errorPrintln("reader", "Success with " + applyErrors + " errors while applying properties.");
+        else Logger.outputPrintln("reader", "Scene loaded successfully.");
         return true;
     }
 
@@ -91,6 +93,7 @@ public class Reader
             case "Sphere" -> mesh = new Sphere();
             case "Plane" -> mesh = new Plane();
             case "Box" -> mesh = new Box();
+            case "Triangle" -> mesh = new Triangle();
             default -> {
                 reportApplyError(block, "Unrecongnized type \'" + block.type + "\'");
                 return false;

@@ -7,6 +7,7 @@ import tracer.mesh.Material;
  */
 public record RayInfo(
     boolean hit,
+    boolean backface,
     Vector3 normal,
     Vector3 point,
     double distance,
@@ -18,12 +19,12 @@ public record RayInfo(
 
     public RayInfo()
     {
-        this(false, null, null, Double.POSITIVE_INFINITY, null, 0.0, 0.0);
+        this(false, false, null, null, Double.POSITIVE_INFINITY, null, 0.0, 0.0);
     }
 
     public RayInfo(double distance, Vector3 point, Vector3 normal, double u, double v, Material material)
     {
-        this(true, normal, point, distance, material, u, v);
+        this(true, false, normal, point, distance, material, u, v);
     }
 
 }

@@ -22,6 +22,8 @@ public class Scene implements PropertyConsumer
 
     public static final Vector3 UP = new Vector3(0, 1, 0);
 
+    private static final double EPSILON = 1e-8;
+
     private int bounces;
 
     private Camera camera;
@@ -109,7 +111,7 @@ public class Scene implements PropertyConsumer
             RayInfo info = intersect(ray);
             if (info.hit())
             {
-                ray.origin = info.point();
+                ray.origin = info.point().add(info.normal().multiply(EPSILON));
                 ray.reflect(info.normal(), info.material().roughness);
                 
                 Material material = info.material();
