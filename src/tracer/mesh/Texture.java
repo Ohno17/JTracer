@@ -6,8 +6,8 @@ import tracer.Logger;
 import tracer.math.Color;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class Texture
 {
@@ -38,7 +38,11 @@ public class Texture
         try
         {
             Logger.outputPrintln("textures", "Loading \'" + path + "\'");
-            BufferedImage image = ImageIO.read(new File(path));
+
+            URL url = getClass().getResource(path.replace("\\", "/"));
+            if (url == null) throw new IOException("File path could not be resolved.");
+
+            BufferedImage image = ImageIO.read(url);
             this.width = image.getWidth();
             this.height = image.getHeight();
 

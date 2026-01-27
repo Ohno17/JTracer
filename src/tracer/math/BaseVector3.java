@@ -26,7 +26,8 @@ public abstract class BaseVector3<T extends BaseVector3<?>> implements Iterable<
 
     public T normalize()
     {
-        return createNew(this.x / magnitude(), this.y / magnitude(), this.z / magnitude());
+        double magnitude = magnitude();
+        return createNew(this.x / magnitude, this.y / magnitude, this.z / magnitude);
     }
 
     public T negative()

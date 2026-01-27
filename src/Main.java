@@ -2,12 +2,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,7 +17,7 @@ public class Main
     private static final Dimension RENDER_WINDOW_SIZE = new Dimension(600, 600);
     private static final Dimension CONTROL_WINDOW_SIZE = new Dimension(350, 500);
 
-    private static String currentSceneFile = "demo/plane_sky.txt";
+    private static String currentSceneFile = "/demo/plane_sky.txt";
 
     public static void main(String[] args) throws Exception
     {
@@ -62,20 +56,16 @@ public class Main
         });
         controlFrame.add(reloadButton);
 
-        String[] choices;
-        List<String> choicesList;
-        try (Stream<Path> walk = Files.walk(Paths.get("demo")))
-        {
-            choicesList = walk
-                .filter(Files::isRegularFile)
-                .filter(path -> path.toString().endsWith(".txt"))
-                .map(Path::toString)
-                .collect(Collectors.toList());
-            choices = new String[choicesList.size()];
-            choicesList.toArray(choices);
-        }
-
-        JComboBox<String> comboBox = new JComboBox<>(choices);
+        JComboBox<String> comboBox = new JComboBox<>(new String[] {
+            "/demo/ball_scene.txt",
+            "/demo/gtest.txt",
+            "/demo/gtest2.txt",
+            "/demo/gtest3.txt",
+            "/demo/mirror_room.txt",
+            "/demo/plane_sky.txt",
+            "/demo/texture_walls.txt",
+            "/demo/triangles_indiv.txt"
+        });
         comboBox.addActionListener(new ActionListener()
         {
             @Override

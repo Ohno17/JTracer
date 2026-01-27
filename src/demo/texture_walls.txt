@@ -6,8 +6,8 @@ Scene  {
     cameraLookAtPosition = [0, -0.5, 4];
 }
 
-Material floorCeil {color = [0.8, 0.8 ,0.8];roughness = 0.7;texture="texture/checker.png";}
-Material woodWall {color = [0.9, 0.9 ,0.9];roughness = 0.7;texture="texture/wood.png";
+Material floorCeil {color = [0.8, 0.8 ,0.8];roughness = 0.7;texture="/texture/checker.png";}
+Material woodWall {color = [0.9, 0.9 ,0.9];roughness = 0.7;texture="/texture/wood.png";
 textureScale = 0.25;
 }
 

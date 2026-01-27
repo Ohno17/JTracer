@@ -1,11 +1,13 @@
 package tracer.reader;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import tracer.mesh.Box;
 import tracer.mesh.Material;
@@ -45,6 +47,15 @@ public class Reader
         applyErrors++;
     }
 
+    public static String readToString(InputStream inputStream) throws IOException
+    {
+        if (inputStream == null) return null;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)))
+        {
+            return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+        }
+    }
+
     /**
      * Processes a scene file and inserts the collected elements into the given scene object.
      * @param scene the scene into which the elements of the file will be inserted
@@ -52,7 +63,7 @@ public class Reader
      * @return true on success, and false on failure
      * @throws IOException
      */
-    public static boolean readInto(Scene scene, Path path) throws IOException
+    public static boolean readInto(Scene scene, String path) throws IOException
     {
         Logger.outputPrintln("");
         Logger.outputPrintln("reader", "Reading \'" + path + "\'");
@@ -60,7 +71,13 @@ public class Reader
 
         Reader.scene = scene;
 
-        String source = Files.readString(path, Charset.forName("UTF-8"));
+        InputStream stream = Reader.class.getResourceAsStream(path.replace('\\', '/'));
+        if (stream == null) 
+        {
+            Logger.errorPrintln("reader", "Failed to read scene file.");
+            return false;
+        }
+        String source = readToString(stream);
 
         DSL dsl = new DSL(source);
         List<DSLBlock> blocks = dsl.compile();

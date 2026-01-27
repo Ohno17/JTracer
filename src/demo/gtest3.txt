@@ -1,6 +1,6 @@
 # THIS IS AN AI-GENERATED scene file, To see how it would react when trying to 'reason' in 3D:
 # "The Silent Horizon" - Final State: The Path of Echoes
-Material sky {texture="texture/sunset.png";}
+Material sky {texture="/texture/sunset.png";}
 Scene {
     material = "sky";
     cameraPosition = [0, 2, -15];

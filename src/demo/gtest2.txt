@@ -1,6 +1,6 @@
 # THIS IS AN AI-GENERATED scene file, To see how it would react when trying to 'reason' in 3D:
 # The "Crystal Gallery" - Optimized for Low Emission
-Material sky {texture="texture/sky.png";}
+Material sky {texture="/texture/sky.png";}
 Scene {
     material = "sky";
 }

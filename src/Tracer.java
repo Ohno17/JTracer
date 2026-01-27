@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -38,7 +37,7 @@ public class Tracer extends JPanel
         
         try
         {
-            Reader.readInto(scene, Path.of(path));
+            Reader.readInto(scene, path);
         }
         catch (IOException exception)
         {
@@ -118,7 +117,7 @@ public class Tracer extends JPanel
         boolean sceneFileGood = false;
         try
         {
-            sceneFileGood = Reader.readInto(newScene, Path.of(path));
+            sceneFileGood = Reader.readInto(newScene, path);
         }
         catch (IOException exception)
         {

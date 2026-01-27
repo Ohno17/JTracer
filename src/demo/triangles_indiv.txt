@@ -1,7 +1,7 @@
 #DEMO Scene
 # THree triangles on a plane and the sky
 
-Material sky {texture="texture/sky.png";}
+Material sky {texture="/texture/sky.png";}
 Scene {
     bounces = 100;
     cameraPosition = [0.75, 0.5, -1.3];
@@ -9,7 +9,7 @@ Scene {
     cameraLookAtPosition = [0.25, 0.25, 0];
 }
 
-Material ball2 {color = [1, 1 ,0]; texture="texture/grid.png"; roughness = 0.9;}
+Material ball2 {color = [1, 1 ,0]; texture="/texture/grid.png"; roughness = 0.9;}
 
 # makes a sphere in the scene
 
