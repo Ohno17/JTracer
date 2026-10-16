@@ -2,11 +2,13 @@ package tracer.reader.dsl;
 
 import java.util.List;
 
+import tracer.Logger;
+
 public class DSL
 {
 
-    public static boolean hadError = false;
-    public static boolean hadRuntimeError = false;
+    public static int syntaxErrors = 0;
+    public static boolean processingError = false;
     
     private final String source;
 
@@ -17,48 +19,59 @@ public class DSL
 
     public List<DSLBlock> compile()
     {
+        syntaxErrors = 0;
+        processingError = false;
+
         Tokenizer tokenizer = new Tokenizer(source);
         List<Token> tokens = tokenizer.scanTokens();
 
         Parser parser = new Parser(tokens);
         List<Statement> statements = parser.parse();
 
-        if (hadError) return null;
+        if (syntaxErrors > 0)
+        {
+            Logger.errorPrintln("Failed with " + syntaxErrors + " syntax errors.");
+            return null;
+        }
 
         Processor processor = new Processor();
         List<DSLBlock> blocks = processor.process(statements);
 
-        if (hadRuntimeError) return null;
+        if (processingError)
+        {
+            Logger.errorPrintln("Failed while processing.");
+            return null;
+        }
 
         return blocks;
     }
 
-    static void error(int line, String message)
+    static void syntaxError(int line, String message)
     {
-        report(line, "", message);
+        syntaxError(line, "", message);
     }
 
-    static void error(Token token, String message)
+    static void syntaxError(Token token, String message)
     {
         if (token.type == Token.Type.EOF)
         {
-            report(token.line, " at end", message);
+            syntaxError(token.line, " at end", message);
         }
         else
         {
-            report(token.line, " at '" + token.lexeme + "'", message);
+            syntaxError(token.line, " at '" + token.lexeme + "'", message);
         }
     }
 
-    public static void runtimeError(Processor.ProcessorException exception) {
-        System.err.println(exception.getMessage() + "\n[line " + exception.token.line + "]");
-        hadRuntimeError = true;
+    public static void processingError(Processor.ProcessorException exception) {
+        Logger.errorPrintln("[line " + exception.token.line + "] Error: " + exception.getMessage());
+        processingError = true;
     }
 
-    private static void report(int line, String where, String message)
+    private static void syntaxError(int line, String where, String message)
     {
-        System.err.println("[line " + line + "] Error" + where + ": " + message);
-        hadError = true;
+        Logger.errorPrintln("[line " + line + "] Error" + where + ": " + message);
+        syntaxErrors++;
     }
 
 }

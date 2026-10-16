@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JDialog;
 
 /**
  * Simulate realistic light reflection and refraction in digital environments.
@@ -16,7 +17,7 @@ public class Main
     private static final Dimension RENDER_WINDOW_SIZE = new Dimension(600, 600);
     private static final Dimension CONTROL_WINDOW_SIZE = new Dimension(350, 500);
 
-    private static String currentSceneFile = "demo/plane_sky.txt";
+    private static String currentSceneFile = "/demo/plane_sky.txt";
 
     public static void main(String[] args) throws Exception
     {
@@ -30,11 +31,12 @@ public class Main
         
         mainFrame.setVisible(true);
 
-        JFrame controlFrame = new JFrame("JTracer - Control Panel");
+        JDialog controlFrame = new JDialog(mainFrame, "JTracer - Control Panel");
         controlFrame.setSize(CONTROL_WINDOW_SIZE);
 
         JButton renderButton = new JButton("Render");
-        renderButton.addActionListener(new ActionListener() {
+        renderButton.addActionListener(new ActionListener()
+        {
             @Override
             public void actionPerformed(ActionEvent e)
             {
@@ -44,7 +46,8 @@ public class Main
         controlFrame.add(renderButton);
 
         JButton reloadButton = new JButton("Reload Scene File");
-        reloadButton.addActionListener(new ActionListener() {
+        reloadButton.addActionListener(new ActionListener()
+        {
             @Override
             public void actionPerformed(ActionEvent e)
             {
@@ -53,12 +56,25 @@ public class Main
         });
         controlFrame.add(reloadButton);
 
-        String[] choices = {"demo/plane_sky.txt", "demo/mirror_room.txt", "demo/ball_scene.txt"};
-        JComboBox<String> comboBox = new JComboBox<>(choices);
-        comboBox.addActionListener(e -> {
-            String selectedItem = (String) comboBox.getSelectedItem();
-            currentSceneFile = selectedItem;
-            tracer.reloadScene(currentSceneFile);
+        JComboBox<String> comboBox = new JComboBox<>(new String[] {
+            "/demo/ball_scene.txt",
+            "/demo/gtest.txt",
+            "/demo/gtest2.txt",
+            "/demo/gtest3.txt",
+            "/demo/mirror_room.txt",
+            "/demo/plane_sky.txt",
+            "/demo/texture_walls.txt",
+            "/demo/triangles_indiv.txt"
+        });
+        comboBox.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                String selectedItem = (String) comboBox.getSelectedItem();
+                currentSceneFile = selectedItem;
+                tracer.reloadScene(currentSceneFile);
+            }
         });
         controlFrame.add(comboBox);
 

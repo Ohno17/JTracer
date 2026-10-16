@@ -1,4 +1,4 @@
-package tracer.vector;
+package tracer.math;
 
 /**
  * Represents a vector in 3D space.
@@ -29,7 +29,7 @@ public class Vector3 extends BaseVector3<Vector3>
     @Override
     public String toString()
     {
-        return "X: " + x + ", Y: " + y + ", Z: " + z;
+        return "[X: " + x + ", Y: " + y + ", Z: " + z + "]";
     }
 
 }

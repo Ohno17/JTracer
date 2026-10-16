@@ -5,11 +5,12 @@ public class Token
 
     public static enum Type
     {
-        IDENTIFIER, NUMBER,
+        IDENTIFIER, STRING, NUMBER,
         
         CURLY_OPEN, CURLY_CLOSE,
         PAREN_OPEN, PAREN_CLOSE,
         SQUARE_OPEN, SQUARE_CLOSE,
+        DOUBLE_QUOTE,
 
         PLUS, MINUS, STAR, SLASH,
         EQUALS, COMMA, SEMICOLON,

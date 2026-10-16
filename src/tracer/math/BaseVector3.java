@@ -1,4 +1,4 @@
-package tracer.vector;
+package tracer.math;
 
 import java.util.Iterator;
 
@@ -26,7 +26,8 @@ public abstract class BaseVector3<T extends BaseVector3<?>> implements Iterable<
 
     public T normalize()
     {
-        return createNew(this.x / magnitude(), this.y / magnitude(), this.z / magnitude());
+        double magnitude = magnitude();
+        return createNew(this.x / magnitude, this.y / magnitude, this.z / magnitude);
     }
 
     public T negative()
@@ -39,14 +40,29 @@ public abstract class BaseVector3<T extends BaseVector3<?>> implements Iterable<
         return createNew(1 / x, 1 / y, 1 / z);
     }
 
+    public T absolute()
+    {
+        return createNew(Math.abs(x), Math.abs(y), Math.abs(z));
+    }
+
     public T add(BaseVector3<?> other)
     {
         return createNew(this.x + other.x, this.y + other.y, this.z + other.z);
     }
 
+    public T add(double s)
+    {
+        return createNew(this.x + s, this.y + s, this.z + s);
+    }
+
     public T subtract(BaseVector3<?> other)
     {
         return createNew(this.x - other.x, this.y - other.y, this.z - other.z);
+    }
+
+    public T subtract(double s)
+    {
+        return createNew(this.x - s, this.y - s, this.z - s);
     }
 
     public T multiply(Matrix3x3 other)
@@ -62,6 +78,11 @@ public abstract class BaseVector3<T extends BaseVector3<?>> implements Iterable<
     public T multiply(double s)
     {
         return createNew(this.x * s, this.y * s, this.z * s);
+    }
+
+    public T divide(BaseVector3<?> other)
+    {
+        return createNew(this.x / other.x, this.y / other.y, this.z / other.z);
     }
 
     public T divide(double s)
@@ -117,7 +138,9 @@ public abstract class BaseVector3<T extends BaseVector3<?>> implements Iterable<
             @Override
             public Double next()
             {
-                return getComponent(index);
+                Double value = getComponent(index);
+                index++;
+                return value;
             }
 
         };

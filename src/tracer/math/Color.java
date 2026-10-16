@@ -1,10 +1,12 @@
-package tracer.vector;
+package tracer.math;
 
 /**
  * Represents an RGB color.
  */
 public class Color extends BaseVector3<Color>
 {
+
+    public static final double GAMMA = 1.0 / 2.2;
 
     public static final Color BLACK = new Color(0, 0, 0);
     public static final Color WHITE = new Color(1, 1, 1);
@@ -15,9 +17,9 @@ public class Color extends BaseVector3<Color>
     public static final Color CYAN = new Color(0, 1, 1);
     public static final Color MAGENTA = new Color(1, 0, 1);
 
-    public Color(int r, int g, int b)
+    public Color(double s)
     {
-        super(r / 255d, g / 255d, b / 255d);
+        super(s, s, s);
     }
 
     public Color(double r, double g, double b)
@@ -36,9 +38,9 @@ public class Color extends BaseVector3<Color>
 
     public int toBytes()
     {
-        return ((int) (clamp(x) * 255) << 16) |
-            ((int) (clamp(y) * 255) << 8) |
-            ((int) (clamp(z) * 255));
+        return ((int) (clamp(Math.pow(x, GAMMA)) * 255) << 16) |
+            ((int) (clamp(Math.pow(y, GAMMA)) * 255) << 8) |
+            ((int) (clamp(Math.pow(z, GAMMA)) * 255));
     }
 
     @Override
@@ -49,7 +51,7 @@ public class Color extends BaseVector3<Color>
     @Override
     public String toString()
     {
-        return "R: " + x + " G: " + y + " B: " + z;
+        return "[R: " + x + " G: " + y + " B: " + z + "]";
     }
 
 }

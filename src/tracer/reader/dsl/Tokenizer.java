@@ -62,13 +62,33 @@ public class Tokenizer
             }
             case ' ', '\r', '\t' -> {}
             case '\n' -> line++;
+            case '\"' -> string();
             default ->
             {
                 if (Character.isDigit(c)) number();
                 else if (Character.isAlphabetic(c)) identifier();
-                else DSL.error(line, "Unexpected character.");
+                else DSL.syntaxError(line, "Unexpected character.");
             }
         }
+    }
+
+    private void string() {
+        while (peek() != '\"' && !atEnd())
+        {
+            if (peek() == '\n') line++;
+            advance();
+        }
+
+        if (atEnd())
+        {
+            DSL.syntaxError(line, "Unterminated string.");
+            return;
+        }
+
+        advance();
+
+        String value = source.substring(start + 1, current - 1);
+        addToken(Type.STRING, value);
     }
 
     private void identifier()

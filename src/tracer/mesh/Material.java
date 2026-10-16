@@ -2,8 +2,8 @@ package tracer.mesh;
 
 import java.util.List;
 
-import tracer.vector.Color;
-import tracer.vector.Vector3;
+import tracer.math.Color;
+import tracer.math.Vector3;
 import tracer.reader.property.InvalidPropertyException;
 import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
@@ -16,85 +16,37 @@ import tracer.reader.property.PropertyValue;
 public class Material implements PropertyConsumer
 {
     
-    private Color color;
+    public Color color;
+    public Texture texture;
 
-    private double roughness;
+    public double roughness;
 
-    private Color emissionColor;
-    private double emissionStrength;
+    public Color emissionColor;
+    public Texture emissionTexture;
+    public double emissionStrength;
 
-    public Material(Color color)
+    public Material()
     {
-        this.color = color;
+        this.color = new Color(1);
+        this.texture = new Texture();
         this.roughness = 0.5;
-        this.emissionColor = new Color(0, 0, 0);
+        this.emissionColor = new Color(1);
+        this.emissionTexture = new Texture();
         this.emissionStrength = 0;
     }
 
-    private Material(Builder builder)
+    public Color sampleColor(double u, double v)
     {
-        this.color = builder.color;
-        this.roughness = builder.roughness;
-        this.emissionColor = builder.emissionColor;
-        this.emissionStrength = builder.emissionStrength;
-    }
-
-    public Color getColor()
-    {
+        if (texture.exists())
+            return texture.sample(u, v).multiply(color);
         return color;
     }
 
-    public double getRoughness()
+    public Color sampleEmissionColor(double u, double v)
     {
-        return roughness;
-    }
-
-    public Color getEmissionColor()
-    {
+        if (emissionTexture.exists())
+            return emissionTexture.sample(u, v).multiply(emissionColor);
         return emissionColor;
-    }
-
-    public double getEmissionStrength()
-    {
-        return emissionStrength;
-    }
-
-    /**
-     * Allows creation of a material with optional aspects
-     */
-    public static class Builder
-    {
-
-        public Color color;
-
-        public double roughness = 0.5;
-
-        public Color emissionColor = new Color(0, 0, 0);
-        public double emissionStrength = 0;
-
-        public Builder(Color color)
-        {
-            this.color = color;
-        }
-
-        public Builder setRoughness(double roughness)
-        {
-            this.roughness = roughness;
-            return this;
-        }
-
-        public Builder setEmission(Color emissionColor, double emissionStrength)
-        {
-            this.emissionColor = emissionColor;
-            this.emissionStrength = emissionStrength;
-            return this;
-        }
-
-        public Material build()
-        {
-            return new Material(this);
-        }
-
     }
 
     @Override
@@ -107,17 +59,29 @@ public class Material implements PropertyConsumer
                 case "color":
                     color = ((Vector3) property.getValue(PropertyValue.Type.VECTOR3)).toColor();
                     break;
+                case "texture":
+                    texture.setImagePath(property.getValue(PropertyValue.Type.STRING));
+                    break;
+                case "textureScale":
+                    texture.setScale(property.getValue(PropertyValue.Type.NUMBER));
+                    break;
                 case "roughness":
                     roughness = property.getValue(PropertyValue.Type.NUMBER);
                     break;
                 case "emissionColor":
                     emissionColor = ((Vector3) property.getValue(PropertyValue.Type.VECTOR3)).toColor();
                     break;
+                case "emissionTexture":
+                    emissionTexture.setImagePath(property.getValue(PropertyValue.Type.STRING));
+                    break;
+                case "emissionTextureScale":
+                    emissionTexture.setScale(property.getValue(PropertyValue.Type.NUMBER));
+                    break;
                 case "emissionStrength":
                     emissionStrength = property.getValue(PropertyValue.Type.NUMBER);
                     break;
                 default:
-                    throw new InvalidPropertyNameException(this, property.getName());
+                    throw new InvalidPropertyNameException(this, property);
             }
         }
     }

@@ -1,0 +1,42 @@
+#DEMO Scene
+# THree triangles on a plane and the sky
+
+Material sky {texture="/texture/sky.png";}
+Scene {
+    bounces = 100;
+    cameraPosition = [0.75, 0.5, -1.3];
+    material = "sky";
+    cameraLookAtPosition = [0.25, 0.25, 0];
+}
+
+Material ball2 {color = [1, 1 ,0]; texture="/texture/grid.png"; roughness = 0.9;}
+
+# makes a sphere in the scene
+
+Triangle {
+    a = [0, 0, 0];
+    b = [0.5, 0.5, 0];
+    c = [0, 0.5, 0];
+    material = "ball2";
+}
+
+Triangle {
+    a = [0.5 + 0.1, 0.5, 0];
+    b = [0.5 + 0.1, 0, 0];
+    c = [0 + 0.1, 0, 0];
+    material = "ball2";
+}
+
+# bottom side 
+Triangle {
+    a = [0 + 0.5, 0, -0.1];
+    b = [-0.5 + 0.5, 0, -0.1 - 0.5];
+    c = [-0.5 + 0.5, 0, -0.1];
+    material = "ball2";
+}
+Triangle {
+    a = [0 + 0.1, 0, -0.1 - 0.5];
+    b = [0.5 + 0.1, 0, -0.1 - 0.5];
+    c = [0.5 + 0.1, 0, -0.1];
+    material = "ball2";
+}

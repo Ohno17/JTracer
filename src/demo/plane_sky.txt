@@ -1,0 +1,57 @@
+#DEMO Scene
+# THree balls on a plane and the sky
+
+Material sky {texture="/texture/sky.png";}
+Scene {
+    bounces = 100;
+    cameraPosition = [0, 0, -1];
+    material = "sky";
+    cameraLookAtPosition = [0, 0, 0];
+}
+
+Material planeMat {
+    color = [0.8, 0.6 ,0.3];
+    roughness = 0.89;
+    texture = "/texture/checker.png";
+}
+
+Material lightBall {
+    color=[0, 0, 0];
+    emissionStrength= 1;
+    emissionColor =[1, 1, 1];
+}
+
+Material ball1
+{
+    color = [0.4, 1, 0];
+    roughness = 0;
+}
+
+Material ball2 {color = [1, 1 ,1]; texture="/texture/wood.png"; roughness = 0.9;}
+
+# makes a sphere in the scene
+Sphere {
+    center =   [-3, 0, 7];
+    radius =    1;
+    material =  "ball1";
+}
+
+Sphere {
+    center =   [2, 0, 4];
+    radius =    1;
+    material =  "ball2";
+}
+
+Sphere
+{
+    center = [0, 2.5 - 1, 10];
+    radius= 2.5;
+    material = "lightBall";
+}
+
+# Floor
+Plane {
+    center = [0, -1, 10];
+    normal = [0, 1, 0];
+    material = "planeMat";
+}

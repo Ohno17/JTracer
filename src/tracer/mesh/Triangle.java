@@ -2,22 +2,29 @@ package tracer.mesh;
 
 import java.util.List;
 
+import tracer.math.Vector3;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.reader.property.InvalidPropertyException;
 import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
-import tracer.vector.Vector3;
 /**
  * Represents a sphere that can be intersected with a ray.
  */
 public class Triangle extends Mesh
 {
 
+    private static final double ELIPSON = 1e-8;
+
     private Vector3 a;
     private Vector3 b;
     private Vector3 c;
+
+    public Triangle()
+    {
+
+    }
 
     public Triangle(Vector3 a, Vector3 b, Vector3 c)
     {
@@ -37,23 +44,24 @@ public class Triangle extends Mesh
         double determinant = -ray.direction.dot(triFaceVector);
         double invDet = 1 / determinant;
 
-        // Calculate hit-dst and barycentric coordinates
         double dst = vertRayOffset.dot(triFaceVector) * invDet;
         double u = edgeAC.dot(rayOffsetPerp) * invDet;
         double v = -edgeAB.dot(rayOffsetPerp) * invDet;
         double w = 1 - u - v;
 
-        // Initialize hit info
-        RayInfo hitInfo = new RayInfo(false);
-        boolean cullBackface = false;
-        boolean keep = cullBackface ? determinant >= 1E-8 : Math.abs(determinant) >= 1E-8;
-        hitInfo.hit = keep && dst > 0 && u >= 0 && v >= 0 && w >= 0;
-        //Vector3 smoothNormal = normalize(this.normA * w + tri.normB * u + tri.normC * v);
-        //hitInfo.normal = smoothNormal * sign(determinant);
-        hitInfo.normal = triFaceVector.normalize();
-        hitInfo.point = ray.origin.add(ray.direction.multiply(dst));
-        hitInfo.distance = dst;
-        return hitInfo;
+        boolean degenerate = Math.abs(determinant) >= ELIPSON;
+
+        if (degenerate && dst > 0 && u >= 0 && v >= 0 && w >= 0)
+            return new RayInfo(
+                determinant < 0,
+                dst,
+                ray.origin.add(ray.direction.multiply(dst)),
+                triFaceVector.normalize(),
+                u,
+                v,
+                this.getMaterial()
+            );
+        return new RayInfo();
     }
 
     @Override
@@ -73,7 +81,7 @@ public class Triangle extends Mesh
                     c = property.getValue(PropertyValue.Type.VECTOR3);
                     break;
                 default:
-                    throw new InvalidPropertyNameException(this, property.getName());
+                    throw new InvalidPropertyNameException(this, property);
             }
         }
     }

@@ -1,0 +1,75 @@
+# THIS IS AN AI-GENERATED scene file, To see how it would react when trying to 'reason' in 3D:
+# The "Crystal Gallery" - Optimized for Low Emission
+Material sky {texture="/texture/sky.png";}
+Scene {
+    material = "sky";
+}
+
+# --- Materials (High Albedo for Maximum Light Bounce) ---
+Material UltraWhite { color = [0.99, 0.99, 0.99]; roughness = 0.4; } 
+Material Chrome { color = [1, 1, 1]; roughness = 0.0; }
+Material ClearGlass { color = [0.9, 0.95, 1.0]; roughness = 0.0; }
+Material AccentFrame { color = [0.2, 0.2, 0.2]; roughness = 0.1; }
+
+# Adjusted emission to safe limits to avoid fireflies/artifacts
+Material SoftGlow {
+    color = [1, 1, 1];
+    emissionStrength = 1; 
+    emissionColor = [1, 1, 1];
+}
+
+# --- Architecture ---
+
+# 1. Main Floor 
+# We remove the "Floating" gap to stop that weird white bar at the bottom
+Box {
+    min = [-8, -1.5, 0];
+    max = [8, -1.4, 16];
+    material = "UltraWhite";
+}
+
+# 2. Glass Side Fins
+# These catch the skybox without blocking light
+Box { min = [-6, -1.4, 4]; max = [-5.9, 4, 12]; material = "ClearGlass"; }
+Box { min = [5.9, -1.4, 4];  max = [6, 4, 12];  material = "ClearGlass"; }
+
+# 3. Thin Structural Beams
+# These create the sharp lines in your sphere reflections
+Box { min = [-6, 4, 2];  max = [6, 4.1, 2.1]; material = "AccentFrame"; }
+Box { min = [-6, 4, 5];  max = [6, 4.1, 5.1]; material = "AccentFrame"; }
+Box { min = [-6, 4, 8];  max = [6, 4.1, 8.1]; material = "AccentFrame"; }
+Box { min = [-6, 4, 11]; max = [6, 4.1, 11.1]; material = "AccentFrame"; }
+Box { min = [-6, 4, 14]; max = [6, 4.1, 14.1]; material = "AccentFrame"; }
+
+# --- Focal Point ---
+
+# 4. Central Reflective Sphere
+Sphere {
+    center = [0, 0.5, 8];
+    radius = 2.0;
+    material = "Chrome";
+}
+
+# 5. Integrated Floor Light
+# Instead of a floating tray, this is "sunk" into the floor
+Box {
+    min = [-2, -1.45, 7];
+    max = [2, -1.4, 9];
+    material = "SoftGlow";
+}
+
+# 6. Rear Frame
+# Provides a backdrop so the sphere isn't reflecting just the skybox
+Box {
+    min = [-3, -1.4, 15];
+    max = [3, 4, 15.2];
+    material = "UltraWhite";
+}
+
+# 7. Ground Plane
+# Lowered and color-matched to the skybox floor to prevent "white bar" artifacts
+Plane {
+    center = [0, -1.51, 0];
+    normal = [0, 1, 0];
+    material = "UltraWhite";
+}

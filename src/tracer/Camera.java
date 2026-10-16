@@ -1,8 +1,8 @@
 package tracer;
 
+import tracer.math.Matrix3x3;
+import tracer.math.Vector3;
 import tracer.ray.Ray;
-import tracer.vector.Matrix3x3;
-import tracer.vector.Vector3;
 /**
  * Represents a camera from which rays originate.
  */
@@ -58,7 +58,6 @@ public class Camera
     public void pointTowards(Vector3 point)
     {
         this.forward = point.subtract(position).normalize();
-        System.out.println(getRotationMatrix());
     }
 
     public Ray getRay(double x, double y)

@@ -2,13 +2,13 @@ package tracer.mesh;
 
 import java.util.List;
 
+import tracer.math.Vector3;
 import tracer.ray.Ray;
 import tracer.ray.RayInfo;
 import tracer.reader.property.InvalidPropertyException;
 import tracer.reader.property.InvalidPropertyNameException;
 import tracer.reader.property.Property;
 import tracer.reader.property.PropertyValue;
-import tracer.vector.Vector3;
 /**
  * Represents a sphere that can be intersected with a ray.
  */
@@ -17,6 +17,11 @@ public class Sphere extends Mesh
 
     private Vector3 center;
     private double radius;
+
+    public Sphere()
+    {
+
+    }
 
     public Sphere(Vector3 center, double radius)
     {
@@ -41,14 +46,22 @@ public class Sphere extends Mesh
         if (discriminant >= 0)
         {
             double t = ((-b) - Math.sqrt(discriminant)) / (2d * a);
+            Vector3 hitPoint = ray.origin.add(ray.direction.multiply(t));
+            Vector3 normal = hitPoint.subtract(center).normalize();
+            double u = 0.5 + (Math.atan2(normal.x, normal.z) / (2 * Math.PI));
+            double v = 0.5 - (Math.asin(normal.y) / Math.PI);
 
             if (t >= 0) return new RayInfo(
+                ray.direction.dot(normal) > 0,
                 t,
-                ray.origin.add(ray.direction.multiply(t)),
-                ray.origin.add(ray.direction.multiply(t)).subtract(center).normalize()
+                hitPoint,
+                normal,
+                u,
+                v,
+                this.getMaterial()
             );
         }
-        return new RayInfo(false);
+        return new RayInfo();
     }
 
     @Override
@@ -65,7 +78,7 @@ public class Sphere extends Mesh
                     radius = property.getValue(PropertyValue.Type.NUMBER);
                     break;
                 default:
-                    throw new InvalidPropertyNameException(this, property.getName());
+                    throw new InvalidPropertyNameException(this, property);
             }
         }
     }

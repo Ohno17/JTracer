@@ -6,20 +6,20 @@ abstract class Statement
 {
     interface Visitor<R>
     {
-        R visitBlockStatement(Block statement);
+        R visitBlockDefinitionStatement(BlockDefinition statement);
 
-        R visitPropertyStatement(Property property);
+        R visitPropertyDefinitionStatement(PropertyDefinition property);
     }
 
     abstract <R> R accept(Visitor<R> visitor);
 
-    static class Block extends Statement
+    static class BlockDefinition extends Statement
     {
         final Token type;
         final Token name;
-        final List<Property> properties;
+        final List<PropertyDefinition> properties;
 
-        Block(Token type, Token name, List<Property> properties)
+        BlockDefinition(Token type, Token name, List<PropertyDefinition> properties)
         {
             this.type = type;
             this.name = name;
@@ -29,16 +29,16 @@ abstract class Statement
         @Override
         <R> R accept(Visitor<R> visitor)
         {
-            return visitor.visitBlockStatement(this);
+            return visitor.visitBlockDefinitionStatement(this);
         }
     }
 
-    static class Property extends Statement
+    static class PropertyDefinition extends Statement
     {
         final Token name;
         final Expression value;
 
-        Property(Token name, Expression value)
+        PropertyDefinition(Token name, Expression value)
         {
             this.name = name;
             this.value = value;
@@ -47,7 +47,7 @@ abstract class Statement
         @Override
         <R> R accept(Visitor<R> visitor)
         {
-            return visitor.visitPropertyStatement(this);
+            return visitor.visitPropertyDefinitionStatement(this);
         }
     }
 }

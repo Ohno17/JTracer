@@ -1,0 +1,82 @@
+# THIS IS AN AI-GENERATED scene file, To see how it would react when trying to 'reason' in 3D:
+# The "Neon Zen Garden" - V3 (Corrected Perspective & Lighting)
+
+Material sky {texture="texture/sunset.png";}
+Scene {
+    material = "sky";
+    # Camera is now higher (y=4) and further back (z=-8) 
+    # looking down towards the base of the gate (y=0.5)
+    cameraPosition = [-4, 0, 10];
+    cameraLookAtPosition = [0, 0.5, 2];
+}
+
+# --- Materials ---
+
+# Toned down the sand to prevent "white-out" glare
+Material ZenSand { color = [0.5, 0.5, 0.52]; roughness = 0.9; } 
+
+Material StillWater { color = [0.02, 0.05, 0.1]; roughness = 0.01; }
+
+Material LacquerRed { color = [0.8, 0.05, 0.05]; roughness = 0.3; }
+
+# Traditional black top-beam for the Torii gate
+Material CharcoalWood { color = [0.1, 0.1, 0.1]; roughness = 0.8; }
+
+# Neon intensities adjusted for a cleaner look
+Material NeonCyan {
+    color = [0.0, 0.8, 1.0];
+    emissionStrength = 4.0; 
+    emissionColor = [0.0, 0.8, 1.0];
+}
+
+Material NeonMagenta {
+    color = [1.0, 0.0, 0.6];
+    emissionStrength = 4.0;
+    emissionColor = [1.0, 0.0, 0.6];
+}
+
+# Overhead light moved much higher to simulate a moon or sky-light
+Material SkyLight {
+    color = [1, 1, 1];
+    emissionStrength = 1.2;
+    emissionColor = [0.9, 0.9, 1.0];
+}
+
+# --- Architecture ---
+
+# 1. The Torii Gate (At Z=2)
+# Pillars
+Box { min = [-2.1, -1, 1.9]; max = [-1.8, 3, 2.1]; material = "LacquerRed"; }
+Box { min = [1.8, -1, 1.9];  max = [2.1, 3, 2.1];  material = "LacquerRed"; }
+
+# Horizontal Support (Red)
+Box { min = [-2.2, 2.2, 1.95]; max = [2.2, 2.5, 2.05]; material = "LacquerRed"; }
+
+# Top Lintel (Charcoal Black) - Overhanging the pillars
+Box { min = [-3.0, 2.8, 1.8]; max = [3.0, 3.3, 2.2]; material = "CharcoalWood"; }
+
+# --- The Landscape ---
+
+# Ground Plane
+Plane {
+    center = [0, -1, 0];
+    normal = [0, 1, 0];
+    material = "ZenSand";
+}
+
+# Reflective Stream
+Box {
+    min = [-1.0, -0.99, -5];
+    max = [1.0, -0.95, 10];
+    material = "StillWater";
+}
+
+# --- Lighting & Props ---
+
+# Floating Lanterns (Positioned in the mid-ground for depth)
+Sphere { center = [-2.5, 1.5, 0]; radius = 0.3; material = "NeonCyan"; }
+Sphere { center = [2.5, 2.0, -2]; radius = 0.3; material = "NeonMagenta"; }
+
+# Ground accent glow leading through the gate
+Box { min = [-1.2, -0.98, -4]; max = [-1.1, -0.94, 6]; material = "NeonCyan"; }
+Box { min = [1.1, -0.98, -4];  max = [1.2, -0.94, 6];  material = "NeonMagenta"; }

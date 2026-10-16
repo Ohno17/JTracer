@@ -1,0 +1,80 @@
+#DEMO Scene
+# A texture box in a texture room
+
+Scene  {
+    cameraPosition = [1, 1, 0];
+    cameraLookAtPosition = [0, -0.5, 4];
+}
+
+Material floorCeil {color = [0.8, 0.8 ,0.8];roughness = 0.7;texture="/texture/checker.png";}
+Material woodWall {color = [0.9, 0.9 ,0.9];roughness = 0.7;texture="/texture/wood.png";
+textureScale = 0.25;
+}
+
+Material light {
+    color=[0.99, 0.99, 0.99];
+    emissionStrength= 10;
+    emissionColor =[1, 1, 1];
+}
+
+Material sphereReflective
+{
+    color = [1, 1, 1];
+    roughness = 1;
+}
+
+# makes a sphere in the scene
+Box {
+    min=[0 - 0.5, -0.5 - 0.5, 4 - 0.5];
+    max=[0 + 0.5, -0.5 + 0.5, 4 + 0.5];
+    material =  "sphereReflective";
+}
+
+# the little light at the top
+Box {
+    min=[-1.4, 4, 4.5 - 1];
+    max=[1.4, 4.5, 4.5 + 1];
+    material="light";
+}
+
+# Floor
+Plane {
+    center = [0, -1.5, 10];
+    normal = [0, 1, 0];
+    material = "floorCeil";
+}
+
+# Ceiling
+Plane {
+    center = [0, 4, 10];
+    normal = [0, -1, 0];
+    material = "floorCeil";
+}
+
+# Left wall
+Plane {
+    center = [-2.5, 0, 10];
+    normal = [1, 0, 0];
+    material = "woodWall";
+}
+
+# Right wall
+Plane {
+    center = [2.5, 0, 10];
+    normal = [-1, 0, 0];
+    material = "woodWall";
+}
+
+# Back wall
+Plane {
+    center = [0, 0, 6];
+    normal = [0, 0, -1];
+    material = "woodWall";
+}
+
+# fromt wll
+Plane {
+    center = [0, 0, -1];
+    normal = [0, 0, 1];
+    material = "woodWall";
+}

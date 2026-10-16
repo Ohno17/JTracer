@@ -50,13 +50,13 @@ public class Parser
             Token name = null;
             if (check(IDENTIFIER))
             {
-                consume(IDENTIFIER, "Expect block type");
+                consume(IDENTIFIER, "Expect block name");
                 name = previous();
             }
 
             consume(CURLY_OPEN, "Expect '{' before block body");
 
-            ArrayList<Statement.Property> properties = new ArrayList<>();
+            ArrayList<Statement.PropertyDefinition> properties = new ArrayList<>();
             while (!check(CURLY_CLOSE) && !atEnd())
             {
                 properties.add(property());
@@ -64,7 +64,7 @@ public class Parser
 
             consume(CURLY_CLOSE, "Expect '}' after block body.");
 
-            return new Statement.Block(type, name, properties);
+            return new Statement.BlockDefinition(type, name, properties);
         }
         catch (ParseException exception)
         {
@@ -73,14 +73,14 @@ public class Parser
         }
     }
 
-    private Statement.Property property()
+    private Statement.PropertyDefinition property()
     {
         Token name = consume(IDENTIFIER, "Expect parameter name");
         consume(EQUALS, "Expect '=' in property");
         Expression value = expression();
 
         consume(SEMICOLON, "Expect ';' after property");
-        return new Statement.Property(name, value);
+        return new Statement.PropertyDefinition(name, value);
     }
 
     private Expression expression()
@@ -135,9 +135,9 @@ public class Parser
             return new Expression.Literal(previous().literal);
         }
 
-        if (match(IDENTIFIER))
+        if (match(STRING))
         {
-            return new Expression.Literal(previous().lexeme);
+            return new Expression.Literal(previous().literal);
         }
 
         if (match(PAREN_OPEN))
@@ -162,7 +162,7 @@ public class Parser
             return new Expression.List(values, listToken);
         }
 
-        throw error(peek(), "Expect expression.");
+        throw error(peek(), "Expect expression, not \'" + peek().type.toString().toLowerCase() + "\'");
     }
 
     private boolean match(Type... types)
@@ -214,7 +214,7 @@ public class Parser
 
     private ParseException error(Token token, String message)
     {
-        DSL.error(token, message);
+        DSL.syntaxError(token, message);
         return new ParseException();
     }
 
