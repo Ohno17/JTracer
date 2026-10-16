@@ -16,7 +16,6 @@ import tracer.vector.Color;
 import tracer.reader.SceneReader;
 /**
  * Holds a ray tracer to display in a swing context.
- * @author ajaysri5715
  */
 public class Tracer extends JPanel
 {

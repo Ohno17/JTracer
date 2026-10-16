@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 
 /**
  * Simulate realistic light reflection and refraction in digital environments.
- * @author ajaysri5715
  */
 public class Main
 {
